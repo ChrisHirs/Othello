@@ -24,18 +24,15 @@ namespace Othello
         public MainWindow()
         {
             InitializeComponent();
-
-            canBoard.Children.Add(rectHover);
-            initBoard();
         }
 
         private void BoardHover(object sender, MouseEventArgs e)
         {
             rectHover.Name = "hoverRect";
 
-            int h = (int)canBoard.ActualHeight;
+            double h = canBoard.ActualHeight;
             double dH = h / 8.0;
-            int w = (int)canBoard.ActualWidth;
+            double w = canBoard.ActualWidth;
             double dW = w / 8.0;
 
             double eX = e.GetPosition(canBoard).X;
@@ -44,18 +41,26 @@ namespace Othello
             rectHover.Width = dW;
             rectHover.Height = dH;
 
-            lblDebug.Content = "X : " + eX + ", Y : " + eY;
-
             Canvas.SetTop(rectHover, (int)(eY / dH) * dH);
             Canvas.SetLeft(rectHover, (int)(eX / dW) * dW);
             
             rectHover.Fill = Brushes.Black;
             rectHover.InvalidateVisual();
+            if (canBoard.Children.Contains(rectHover))
+            {
+                if(eX > w || eX > h || eX < 0 || eY < 0)
+                {
+                    canBoard.Children.Remove(rectHover);
+                }
+            } else
+            {
+                canBoard.Children.Add(rectHover);
+            }
         }
 
         private void Canvas_Loaded(object sender, RoutedEventArgs e)
         {
-            initBoard();
+            printBoard();
         }
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
@@ -67,15 +72,18 @@ namespace Othello
             }
             canBoard.Height = boardDimensions;
             canBoard.Width = canBoard.Height;
-            canBoard.Children.Clear();
-            initBoard();
+            printBoard();
         }
-        private void initBoard()
+        private void printBoard()
         {
+
+            canBoard.Children.Clear();
+
             int h = (int)canBoard.ActualHeight;
             int w = (int)canBoard.ActualWidth;
-
+            
             Rectangle bg = new Rectangle();
+
             bg.Height = h;
             bg.Width = w;
 
@@ -106,6 +114,21 @@ namespace Othello
                 myLine.X2 = (h / 4.0 * i) + (h/16.0);
                 myLine.StrokeThickness = (int)(w/8.0);
                 canBoard.Children.Add(myLine);
+            }
+        }
+
+        private void Window_Loaded(object sender, RoutedEventArgs e)
+        {
+            rectHover.Fill = Brushes.Black;
+            canBoard.Children.Add(rectHover);
+            printBoard();
+        }
+
+        private void canBoard_MouseLeave(object sender, MouseEventArgs e)
+        {
+            if (canBoard.Children.Contains(rectHover))
+            {
+                canBoard.Children.Remove(rectHover);
             }
         }
     }

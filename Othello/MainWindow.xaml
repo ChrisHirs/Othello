@@ -5,9 +5,9 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Othello"
         mc:Ignorable="d"
-        Title="MainWindow" Height="350" Width="525" SizeChanged="Window_SizeChanged">
+        Title="MainWindow" Height="350" Width="525" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded">
     <Grid>
-        <Canvas Name="canBoard" Height="300" Width="300" Margin="10,10,207,10" MouseMove="BoardHover" Loaded="Canvas_Loaded"/>
+        <Canvas Name="canBoard" Height="300" Width="300" Margin="10,10,207,10" MouseMove="BoardHover" Loaded="Canvas_Loaded" MouseLeave="canBoard_MouseLeave"/>
         <Label x:Name="lblDebug" Content="LabelTest&#xD;&#xA;testtesttest" HorizontalAlignment="Left" Margin="315,10,0,0" VerticalAlignment="Top" Width="192"/>
     </Grid>
 </Window>
