@@ -20,57 +20,92 @@ namespace Othello
     /// </summary>
     public partial class MainWindow : Window
     {
+        Rectangle rectHover = new Rectangle();
         public MainWindow()
         {
             InitializeComponent();
+
+            canBoard.Children.Add(rectHover);
+            initBoard();
         }
 
-        private void BoardHoover(object sender, MouseEventArgs e)
+        private void BoardHover(object sender, MouseEventArgs e)
         {
-            Canvas board = (Canvas)sender;
-            Rectangle r = new Rectangle();
+            rectHover.Name = "hoverRect";
 
-            int h = (int)board.ActualHeight;
+            int h = (int)canBoard.ActualHeight;
             double dH = h / 8.0;
-            int w = (int)board.ActualWidth;
+            int w = (int)canBoard.ActualWidth;
             double dW = w / 8.0;
 
-            double eX = e.GetPosition(board).X;
-            double eY = e.GetPosition(board).Y;
+            double eX = e.GetPosition(canBoard).X;
+            double eY = e.GetPosition(canBoard).Y;
 
-            r.Width = dW;
-            r.Height = dH;
+            rectHover.Width = dW;
+            rectHover.Height = dH;
 
-            Canvas.SetTop(r, eY % dH);
-            Canvas.SetLeft(r, eX % dW);
+            lblDebug.Content = "X : " + eX + ", Y : " + eY;
+
+            Canvas.SetTop(rectHover, (int)(eY / dH) * dH);
+            Canvas.SetLeft(rectHover, (int)(eX / dW) * dW);
             
-            r.Fill = Brushes.Black;
-            board.Children.Add(r);
+            rectHover.Fill = Brushes.Black;
+            rectHover.InvalidateVisual();
         }
 
         private void Canvas_Loaded(object sender, RoutedEventArgs e)
         {
-            Canvas board = (Canvas)sender;
-            int h = (int)board.ActualHeight;
-            int w = (int)board.ActualWidth;
-            for (int i = 0; i < 9; i++)
+            initBoard();
+        }
+
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            int boardDimensions = (int)Width - 50;
+            if (Height < Width)
+            {
+                boardDimensions = (int)Height - 100;
+            }
+            canBoard.Height = boardDimensions;
+            canBoard.Width = canBoard.Height;
+            canBoard.Children.Clear();
+            initBoard();
+        }
+        private void initBoard()
+        {
+            int h = (int)canBoard.ActualHeight;
+            int w = (int)canBoard.ActualWidth;
+
+            Rectangle bg = new Rectangle();
+            bg.Height = h;
+            bg.Width = w;
+
+            Canvas.SetTop(bg, 0);
+            Canvas.SetLeft(bg, 0);
+            bg.Fill = Brushes.Yellow;
+
+            canBoard.Children.Add(bg);
+
+            Brush myBrush = new SolidColorBrush(Color.FromArgb(100,200,10,10));
+            
+
+            for (int i = 0; i < 4; i++)
             {
                 Line myLine = new Line();
-                myLine.Stroke = System.Windows.Media.Brushes.LightSteelBlue;
+                myLine.Stroke = myBrush;
                 myLine.X1 = 0;
                 myLine.X2 = w;
-                myLine.Y1 = h / 8.0 * i;
-                myLine.Y2 = h / 8.0 * i;
-                myLine.StrokeThickness = 2;
-                board.Children.Add(myLine);
+                myLine.Y1 = (h / 4.0 * i) + (w/16.0);
+                myLine.Y2 = (h / 4.0 * i) + (h/16.0);
+                myLine.StrokeThickness = (int)(h/8.0);
+                canBoard.Children.Add(myLine);
                 myLine = new Line();
-                myLine.Stroke = System.Windows.Media.Brushes.LightSteelBlue;
+                myLine.Stroke = myBrush;
                 myLine.Y1 = 0;
                 myLine.Y2 = h;
-                myLine.X1 = w / 8.0 * i;
-                myLine.X2 = w / 8.0 * i;
-                myLine.StrokeThickness = 2;
-                board.Children.Add(myLine);
+                myLine.X1 = (w / 4.0 * i) + (w/16.0);
+                myLine.X2 = (h / 4.0 * i) + (h/16.0);
+                myLine.StrokeThickness = (int)(w/8.0);
+                canBoard.Children.Add(myLine);
             }
         }
     }
