@@ -21,6 +21,7 @@ namespace Othello
     public partial class MainWindow : Window
     {
         Rectangle rectHover = new Rectangle();
+        Board board = new Board();
         public MainWindow()
         {
             InitializeComponent();
@@ -29,7 +30,7 @@ namespace Othello
         private void BoardHover(object sender, MouseEventArgs e)
         {
             rectHover.Name = "hoverRect";
-
+            
             double h = canBoard.ActualHeight;
             double dH = h / 8.0;
             double w = canBoard.ActualWidth;
@@ -41,10 +42,24 @@ namespace Othello
             rectHover.Width = dW;
             rectHover.Height = dH;
 
-            Canvas.SetTop(rectHover, (int)(eY / dH) * dH);
-            Canvas.SetLeft(rectHover, (int)(eX / dW) * dW);
+            int squareIdI = (int)(eX / dW);
+            int squareIdJ = (int)(eY / dH);
+
+            ImageBrush whitePlayerBrush = new ImageBrush();
+            whitePlayerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_blueberry.png", UriKind.Relative));
+            rectHover.Fill = whitePlayerBrush;
+
+            /*if (board.IsPlayable(squareIdI, squareIdJ, true)){
+                Canvas.SetTop(rectHover, (squareIdJ * dH));
+                Canvas.SetLeft(rectHover, (squareIdI * dW));
+            } else
+            {
+                Canvas.SetTop(rectHover, (squareIdJ * dH));
+                Canvas.SetLeft(rectHover, (squareIdI * dW));
+            }*/
+            Canvas.SetTop(rectHover, (squareIdJ * dH));
+            Canvas.SetLeft(rectHover, (squareIdI * dW));
             
-            rectHover.Fill = Brushes.Black;
             rectHover.InvalidateVisual();
             if (canBoard.Children.Contains(rectHover))
             {
@@ -114,6 +129,35 @@ namespace Othello
                 myLine.X2 = (h / 4.0 * i) + (h/16.0);
                 myLine.StrokeThickness = (int)(w/8.0);
                 canBoard.Children.Add(myLine);
+            }
+
+            ImageBrush whitePlayerBrush = new ImageBrush();
+            whitePlayerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_blueberry.png", UriKind.Relative));
+            ImageBrush blackPlayerBrush = new ImageBrush();
+            blackPlayerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_mango.png", UriKind.Relative));
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if(board.GetBoard()[i,j] >= 0)
+                    {
+                        Rectangle square = new Rectangle();
+
+                        square.Height = h/8.0;
+                        square.Width = w/8.0;
+                        Canvas.SetTop(square, j * h / 8.0);
+                        Canvas.SetLeft(square, i * w / 8.0);
+                        if (board.GetBoard()[i, j] == 0)
+                        {
+                            square.Fill = whitePlayerBrush;
+                        } else
+                        {
+                            square.Fill = blackPlayerBrush;
+                        }
+                        bg.Fill = Brushes.Yellow;
+                        canBoard.Children.Add(square);
+                    }
+                }
             }
         }
 
