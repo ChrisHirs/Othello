@@ -20,11 +20,15 @@ namespace Othello
     /// </summary>
     public partial class MainWindow : Window
     {
+        bool turnToWhite = true;
         Rectangle rectHover = new Rectangle();
         Board board = new Board();
         public MainWindow()
         {
             InitializeComponent();
+            ImageBrush bgImage = new ImageBrush();
+            bgImage.ImageSource = new BitmapImage(new Uri(@"imgs\BackgroundOthello.jpg", UriKind.Relative));
+            this.Background = bgImage;
         }
 
         private void BoardHover(object sender, MouseEventArgs e)
@@ -45,20 +49,29 @@ namespace Othello
             int squareIdI = (int)(eX / dW);
             int squareIdJ = (int)(eY / dH);
 
-            ImageBrush whitePlayerBrush = new ImageBrush();
-            whitePlayerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_blueberry.png", UriKind.Relative));
-            rectHover.Fill = whitePlayerBrush;
+            ImageBrush playerBrush = new ImageBrush();
+            if (turnToWhite)
+            {
+                playerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_blueberry.png", UriKind.Relative));
+            }
+            else
+            {
+                playerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_mango.png", UriKind.Relative));
+            }
+            rectHover.Fill = playerBrush;
+            
+            if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite)){
 
-            /*if (board.IsPlayable(squareIdI, squareIdJ, true)){
                 Canvas.SetTop(rectHover, (squareIdJ * dH));
                 Canvas.SetLeft(rectHover, (squareIdI * dW));
+                playerBrush.Opacity = 0.55;
             } else
             {
-                Canvas.SetTop(rectHover, (squareIdJ * dH));
-                Canvas.SetLeft(rectHover, (squareIdI * dW));
-            }*/
-            Canvas.SetTop(rectHover, (squareIdJ * dH));
-            Canvas.SetLeft(rectHover, (squareIdI * dW));
+
+                Canvas.SetTop(rectHover, eY - dH / 2);
+                Canvas.SetLeft(rectHover, eX - dW / 2);
+                playerBrush.Opacity = 0.2;
+            }
             
             rectHover.InvalidateVisual();
             if (canBoard.Children.Contains(rectHover))
@@ -104,7 +117,7 @@ namespace Othello
 
             Canvas.SetTop(bg, 0);
             Canvas.SetLeft(bg, 0);
-            bg.Fill = Brushes.Yellow;
+            bg.Fill = Brushes.White;
 
             canBoard.Children.Add(bg);
 
@@ -130,7 +143,18 @@ namespace Othello
                 myLine.StrokeThickness = (int)(w/8.0);
                 canBoard.Children.Add(myLine);
             }
+            Rectangle textileFilter = new Rectangle();
 
+            textileFilter.Height = h;
+            textileFilter.Width = w;
+
+            Canvas.SetTop(textileFilter, 0);
+            Canvas.SetLeft(textileFilter, 0);
+            ImageBrush textileBrush = new ImageBrush();
+            textileBrush.ImageSource = new BitmapImage(new Uri(@"imgs\texttexture.png", UriKind.Relative));
+            textileFilter.Fill = textileBrush;
+
+            canBoard.Children.Add(textileFilter);
             ImageBrush whitePlayerBrush = new ImageBrush();
             whitePlayerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_blueberry.png", UriKind.Relative));
             ImageBrush blackPlayerBrush = new ImageBrush();
@@ -154,7 +178,6 @@ namespace Othello
                         {
                             square.Fill = blackPlayerBrush;
                         }
-                        bg.Fill = Brushes.Yellow;
                         canBoard.Children.Add(square);
                     }
                 }
@@ -174,6 +197,25 @@ namespace Othello
             {
                 canBoard.Children.Remove(rectHover);
             }
+        }
+
+        private void canBoard_MouseUp(object sender, MouseButtonEventArgs e)
+        {
+            double dH = canBoard.ActualHeight / 8.0;
+            double dW = canBoard.ActualWidth / 8.0;
+
+            double eX = e.GetPosition(canBoard).X;
+            double eY = e.GetPosition(canBoard).Y;
+
+            int squareIdI = (int)(eX / dW);
+            int squareIdJ = (int)(eY / dH);
+
+            if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
+            {
+                board.PlayMove(squareIdI, squareIdJ, turnToWhite);
+                turnToWhite = !turnToWhite;
+            }
+            printBoard();
         }
     }
 }
