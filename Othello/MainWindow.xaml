@@ -78,8 +78,8 @@
                 </Button>
                 <Button x:Name="btnSkinPlayerA" Content="Button" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Width="212" Height="214" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave"/>
                 <Button x:Name="btnSkinPlayerB" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Width="213" Height="214" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave"/>
-                <Label Content="Label" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="8" VerticalAlignment="Top" Height="98" Width="212" FontSize="48"/>
-                <Label Content="Label" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="8" VerticalAlignment="Top" Height="98" Width="213" FontSize="48"/>
+                <Label Content="{Binding ElementName=MyOthello, Path=Player1Time}" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="8" VerticalAlignment="Top" Height="98" Width="212" FontSize="48"/>
+                <Label Content="{Binding ElementName=MyOthello, Path=Player2Time}" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="8" VerticalAlignment="Top" Height="98" Width="213" FontSize="48"/>
                 <Label Content="{Binding ElementName=MyOthello, Path=WhiteScore}" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="9" VerticalAlignment="Top" Height="97" Width="212" FontSize="36"/>
                 <Label Content="{Binding ElementName=MyOthello, Path=BlackScore}" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="9" VerticalAlignment="Top" Height="97" Width="213" FontSize="36"/>
             </Grid>

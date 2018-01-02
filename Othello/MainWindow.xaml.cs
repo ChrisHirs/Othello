@@ -14,6 +14,7 @@ using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
 using System.Windows.Shapes;
+using System.Windows.Threading;
 
 namespace Othello
 {
@@ -24,9 +25,12 @@ namespace Othello
     {
         int whiteScore;
         int blackScore;
-        TimeSpan player1Time;
-        TimeSpan player2Time;
+        TimeSpan player1TimeS;
+        TimeSpan player2TimeS;
+        string player1Time;
+        string player2Time;
         DateTime turnStartTime;
+        DispatcherTimer mainTimer;
         bool turnToWhite = true;
         Rectangle rectHover = new Rectangle();
         Board board = new Board();
@@ -35,11 +39,23 @@ namespace Othello
 
         public int WhiteScore
         {
+            get { return whiteScore; }
             set { whiteScore = value; RaisePropertyChanged("WhiteScore"); }
         }
         public int BlackScore
         {
+            get { return blackScore; }
             set { blackScore = value; RaisePropertyChanged("BlackScore"); }
+        }
+        public string Player1Time
+        {
+            get { return player1Time; }
+            set { player1Time = value; RaisePropertyChanged("Player1Time"); }
+        }
+        public string Player2Time
+        {
+            get { return player2Time; }
+            set { player2Time = value; RaisePropertyChanged("Player2Time"); }
         }
         void RaisePropertyChanged(string propertyName)
         {
@@ -50,8 +66,13 @@ namespace Othello
         }
         public MainWindow()
         {
-            player1Time = new TimeSpan();
-            player2Time = new TimeSpan();
+            mainTimer = new DispatcherTimer();
+            mainTimer.Tick += new EventHandler(updateTimeStrings);
+            mainTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            mainTimer.Start();
+            player1TimeS = new TimeSpan();
+            player2TimeS = new TimeSpan();
+            Player2Time = player1TimeS.ToString("mm\\:ss\\:ff");
             turnStartTime = DateTime.Now;
             InitializeComponent();
             ImageBrush bgImage = new ImageBrush();
@@ -123,14 +144,6 @@ namespace Othello
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            /*int boardDimensions = (int)Width - 50;
-            if (Height < Width)
-            {
-                boardDimensions = (int)Height - 100;
-            }
-            canBoard.Height = boardDimensions;
-            canBoard.Width = canBoard.Height;
-            printBoard();*/
         }
         private void printBoard()
         {
@@ -250,12 +263,7 @@ namespace Othello
             this.BlackScore = board.GetBlackScore();
             lblDebug.Content = whiteScore;
 
-            if (turnToWhite)
-            {
-                player1Time += DateTime.Now - turnStartTime;
-            }
-            lblDebug.Content = player1Time.ToString("g");
-            turnStartTime = DateTime.Now;
+            
         }
 
         private void btnMenuEnter(object sender, MouseEventArgs e)
@@ -272,9 +280,26 @@ namespace Othello
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
+            player1TimeS = new TimeSpan();
+            player2TimeS = new TimeSpan(); 
+            Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
             board = new Board();
             turnToWhite = true;
             printBoard();
+        }
+        private void updateTimeStrings(object sender, EventArgs e)
+        {
+            if (!turnToWhite)
+            {
+                player2TimeS += DateTime.Now - turnStartTime;
+                Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
+            }
+            else
+            {
+                player1TimeS += DateTime.Now - turnStartTime;
+                Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
+            }
+            turnStartTime = DateTime.Now;
         }
     }
 }
