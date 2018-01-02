@@ -64,6 +64,7 @@
       <SubType>Code</SubType>
     </Compile>
     <Compile Include="Board.cs" />
+    <Compile Include="FileHandler.cs" />
     <Compile Include="IPlayable.cs" />
     <Compile Include="MainWindow.xaml.cs">
       <DependentUpon>MainWindow.xaml</DependentUpon>
@@ -87,6 +88,7 @@
     <EmbeddedResource Include="Properties\Resources.resx">
       <Generator>ResXFileCodeGenerator</Generator>
       <LastGenOutput>Resources.Designer.cs</LastGenOutput>
+      <SubType>Designer</SubType>
     </EmbeddedResource>
     <None Include="Properties\Settings.settings">
       <Generator>SettingsSingleFileGenerator</Generator>
@@ -146,9 +148,6 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="imgs\m_rose.png" />
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="imgs\m_stawberry.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="imgs\m_strawberry.png" />

@@ -57,7 +57,7 @@
                         </RadialGradientBrush>
                     </Button.Background>
                 </Button>
-                <Button x:Name="btnOpen" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="445" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Open" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0">
+                <Button x:Name="btnOpen" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="445" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Open" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnOpen_Click">
                     <Button.Background>
                         <RadialGradientBrush>
                             <GradientStop Color="#FF5F5F5F" Offset="0.003"/>
@@ -65,7 +65,7 @@
                         </RadialGradientBrush>
                     </Button.Background>
                 </Button>
-                <Button x:Name="btnSave" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="3" VerticalAlignment="Top" Width="445" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Save" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0">
+                <Button x:Name="btnSave" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="3" VerticalAlignment="Top" Width="445" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Save" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnSave_Click">
                     <Button.Background>
                         <RadialGradientBrush>
                             <GradientStop Color="#FF5F5F5F" Offset="0.003"/>
@@ -73,8 +73,8 @@
                         </RadialGradientBrush>
                     </Button.Background>
                 </Button>
-                <Button x:Name="btnSkinPlayerA" Content="Button" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="8" Width="212" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Height="206" VerticalAlignment="Top"/>
-                <Button x:Name="btnSkinPlayerB" Content="Button" Grid.Column="1" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="8" VerticalAlignment="Top" Width="213" Height="206" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave"/>
+                <Button x:Name="btnSkinPlayerA" Content="" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="8" Width="212" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Height="206" VerticalAlignment="Top" Click="ChangeSkin"/>
+                <Button x:Name="btnSkinPlayerB" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="8" VerticalAlignment="Top" Width="213" Height="206" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Click="ChangeSkin"/>
                 <Label Content="{Binding ElementName=MyOthello, Path=Player1Time}" HorizontalAlignment="Center" Margin="-5,10,10,0" Grid.Row="9" VerticalAlignment="Top" Height="88" Width="227" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="#FF5DFF00">
                     <Label.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
@@ -105,7 +105,7 @@
                         <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="2" Direction="300"/>
                     </Label.Effect>
                 </Label>
-                <Button x:Name="btnIA" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="6" VerticalAlignment="Top" Width="213" Height="88" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="I.A." FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Grid.Column="1">
+                <Button x:Name="btnIA" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="6" VerticalAlignment="Top" Width="213" Height="88" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="I.A." FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Grid.Column="1" Click="btnIA_Click">
                     <Button.Background>
                         <RadialGradientBrush>
                             <GradientStop Color="#FF5F5F5F" Offset="0.003"/>
@@ -113,6 +113,111 @@
                         </RadialGradientBrush>
                     </Button.Background>
                 </Button>
+                <Grid x:Name="grdSkinSelector" HorizontalAlignment="Left" Height="915" Margin="-1417,98,0,0" VerticalAlignment="Top" Width="1852" Grid.RowSpan="8" Grid.ColumnSpan="2" Background="#7FFFFFFF" Grid.Row="1" Visibility="Hidden">
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                        <ColumnDefinition Width="1*" />
+                    </Grid.ColumnDefinitions>
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                        <RowDefinition Height="1*" />
+                    </Grid.RowDefinitions>
+                    <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_almond.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_banana.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_blueberry.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_caramel.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="4" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_cherry.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="5" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_chocolate.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_coffee.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="1" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_grape.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="1" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_honey-lemon.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="1" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_kiwi.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="4" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="1" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_mango.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="5" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="1" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_mint.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="289" Height="285">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_orange.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="2" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_peach.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="2" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_raspberry.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="2" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_rose.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="4" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="2" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_strawberry.png"/>
+                        </Button.Background>
+                    </Button>
+                    <Button Content="" Grid.Column="5" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="2" Click="btnSelectSkin">
+                        <Button.Background>
+                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_vanilla.png"/>
+                        </Button.Background>
+                    </Button>
+                </Grid>
             </Grid>
         </Grid>
     </Viewbox>

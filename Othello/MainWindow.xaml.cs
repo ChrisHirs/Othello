@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Linq;
+using System.Runtime.Serialization;
 using System.Text;
 using System.Threading.Tasks;
 using System.Timers;
@@ -24,6 +25,13 @@ namespace Othello
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        FileHandler f = new FileHandler();
+        bool isIA;
+        public bool IsIA
+        {
+            get; set;
+        }
+        bool isSkinForPlayer1;
         bool isPlaying;
         int whiteScore;
         int blackScore;
@@ -35,9 +43,11 @@ namespace Othello
         DispatcherTimer mainTimer;
         bool turnToWhite = true;
         Rectangle rectHover = new Rectangle();
-        Board board = new Board();
-        System.Drawing.Bitmap skinPlayer1 = Properties.Resources.m_banana;
-        System.Drawing.Bitmap skinPlayer2 = Properties.Resources.m_blueberry;
+        public Board board = new Board();
+        int skinIdPlayer1;
+        int skinIdPlayer2;
+        Brush skinPlayer1 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_banana.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        Brush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -73,6 +83,10 @@ namespace Othello
         }
         public MainWindow()
         {
+            skinIdPlayer1 = 0;
+            skinIdPlayer2 = 0;
+            isIA = false;
+            isSkinForPlayer1 = true;
             isPlaying = false;
             InitializeComponent();
             /*ImageBrush bgImage = new ImageBrush();
@@ -83,6 +97,8 @@ namespace Othello
             player2TimeS = new TimeSpan();
             Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
             Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
+            btnSkinPlayerA.Background = skinPlayer1;
+            btnSkinPlayerB.Background = skinPlayer2;
         }
 
         private void BoardHover(object sender, MouseEventArgs e)
@@ -104,33 +120,30 @@ namespace Othello
 
                 int squareIdI = (int)(eX / dW);
                 int squareIdJ = (int)(eY / dH);
-
-                ImageBrush playerBrush = new ImageBrush();
+                
                 if (turnToWhite)
                 {
-                    playerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer1.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    rectHover.Fill = skinPlayer1.Clone();
                 }
                 else
                 {
-                    playerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer2.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                    rectHover.Fill = skinPlayer2.Clone();
                 }
-                rectHover.Fill = playerBrush;
 
                 if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
                 {
 
                     Canvas.SetTop(rectHover, (squareIdJ * dH));
                     Canvas.SetLeft(rectHover, (squareIdI * dW));
-                    playerBrush.Opacity = 0.55;
+                    rectHover.Fill.Opacity = 0.55;
                 }
                 else
                 {
 
                     Canvas.SetTop(rectHover, eY - dH / 2);
                     Canvas.SetLeft(rectHover, eX - dW / 2);
-                    playerBrush.Opacity = 0.2;
+                    rectHover.Fill.Opacity = 0.2;
                 }
-
                 rectHover.InvalidateVisual();
                 if (canBoard.Children.Contains(rectHover))
                 {
@@ -207,10 +220,6 @@ namespace Othello
             textileFilter.Fill = textileBrush;
 
             canBoard.Children.Add(textileFilter);
-            ImageBrush whitePlayerBrush = new ImageBrush();
-            whitePlayerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer1.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
-            ImageBrush blackPlayerBrush = new ImageBrush();
-            blackPlayerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer2.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
@@ -225,10 +234,10 @@ namespace Othello
                         Canvas.SetLeft(square, i * w / 8.0);
                         if (board.GetBoard()[i, j] == 0)
                         {
-                            square.Fill = whitePlayerBrush;
+                            square.Fill = skinPlayer1.Clone();
                         } else
                         {
-                            square.Fill = blackPlayerBrush;
+                            square.Fill = skinPlayer2.Clone();
                         }
                         canBoard.Children.Add(square);
                     }
@@ -325,6 +334,58 @@ namespace Othello
             turnStartTime = DateTime.Now;
             whiteScore = 2;
             blackScore = 2;
+        }
+
+        private void ChangeSkin(object sender, RoutedEventArgs e)
+        {
+            if(((Button)sender).Name == btnSkinPlayerA.Name)
+            {
+                isSkinForPlayer1 = true;
+            } else
+            {
+                isSkinForPlayer1 = false;
+            }
+            isPlaying = false;
+            grdSkinSelector.Visibility = Visibility.Visible;
+        }
+
+        private void btnSelectSkin(object sender, RoutedEventArgs e)
+        {
+            isPlaying = true;
+            turnStartTime = DateTime.Now;
+            grdSkinSelector.Visibility = Visibility.Hidden;
+            if (isSkinForPlayer1)
+            {
+                skinPlayer1 = ((Button)sender).Background;
+            } else
+            {
+                skinPlayer2 = ((Button)sender).Background;
+            }
+            btnSkinPlayerA.Background = skinPlayer1;
+            btnSkinPlayerB.Background = skinPlayer2;
+            printBoard();
+        }
+
+        private void btnIA_Click(object sender, RoutedEventArgs e)
+        {
+            if (isIA)
+            {
+                isIA = false;
+            }
+            else
+            {
+                isIA = true;
+            }
+        }
+
+        private void btnSave_Click(object sender, RoutedEventArgs e)
+        {
+            f.Write(this);
+        }
+
+        private void btnOpen_Click(object sender, RoutedEventArgs e)
+        {
+            f.Read(this);
         }
     }
 }

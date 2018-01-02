@@ -233,16 +233,6 @@ namespace Othello.Properties {
         /// <summary>
         ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
         /// </summary>
-        internal static System.Drawing.Bitmap m_stawberry {
-            get {
-                object obj = ResourceManager.GetObject("m_stawberry", resourceCulture);
-                return ((System.Drawing.Bitmap)(obj));
-            }
-        }
-        
-        /// <summary>
-        ///   Recherche une ressource localisée de type System.Drawing.Bitmap.
-        /// </summary>
         internal static System.Drawing.Bitmap m_strawberry {
             get {
                 object obj = ResourceManager.GetObject("m_strawberry", resourceCulture);

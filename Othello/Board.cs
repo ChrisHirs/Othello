@@ -2,9 +2,13 @@
 
 namespace Othello
 {
-    internal class Board : IPlayable
+    public class Board : IPlayable
     {
         int[,] boardState;
+        public int[,] BoardState
+        {
+            get; set;
+        }
         public Board()
         {
             boardState = new int[8,8];
@@ -106,7 +110,6 @@ namespace Othello
             }
             return result;
         }
-
         public bool PlayMove(int column, int line, bool isWhite)
         {
             if (IsPlayable(column, line, isWhite))
