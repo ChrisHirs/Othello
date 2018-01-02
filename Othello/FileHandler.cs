@@ -16,7 +16,9 @@ namespace Othello
             saveFileDialog1.Title = "Save a game File";
             saveFileDialog1.ShowDialog();
             StreamWriter outputFile = new StreamWriter(saveFileDialog1.FileName + ".moth", true);
-            
+            outputFile.Write(win.IsIA);
+            outputFile.Write(win.board);
+
         }
         public void Read(MainWindow win)
         {
@@ -25,7 +27,6 @@ namespace Othello
             openFileDialog1.ShowDialog();
             MainWindow winTmp = null;
             StreamReader sr = new StreamReader(openFileDialog1.FileName, true);
-            
         }
     }
 
