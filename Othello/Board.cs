@@ -23,7 +23,18 @@ namespace Othello
 
         public int GetBlackScore()
         {
-            throw new NotImplementedException();
+            int blackScore = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (boardState[i, j] == 1)
+                    {
+                        blackScore++;
+                    }
+                }
+            }
+            return blackScore;
         }
 
         public int[,] GetBoard()
@@ -33,7 +44,7 @@ namespace Othello
 
         public string GetName()
         {
-            throw new NotImplementedException();
+            return "Christophe Hischi, Deni Gahlinger";
         }
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
@@ -43,7 +54,18 @@ namespace Othello
 
         public int GetWhiteScore()
         {
-            throw new NotImplementedException();
+            int whiteScore = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if(boardState[i, j] == 0)
+                    {
+                        whiteScore++;
+                    }
+                }
+            }
+            return whiteScore;
         }
 
         public bool IsPlayable(int column, int line, bool isWhite)
@@ -139,23 +161,6 @@ namespace Othello
                         jIterator += directions[i, 1];
                     }
                 }
-                /*if (column + directions[i, 0] < 8 && column + directions[i, 0] > 0 && line + directions[i, 1] < 8 && line + directions[i, 1] > 0)
-                {
-                    if (boardState[column + directions[i, 0], line + directions[i, 1]] == opponentMark)
-                    {
-                        int iIterator = column + directions[i, 0];
-                        int jIterator = line + directions[i, 1];
-                        while (iIterator > 0 && jIterator > 0 && iIterator < 8 && jIterator < 8)
-                        {
-                            if (boardState[iIterator, jIterator] == playerMark)
-                            {
-                                result = true;
-                            }
-                            iIterator += directions[i, 0];
-                            jIterator += directions[i, 1];
-                        }
-                    }
-                }*/
             }
         }
     }

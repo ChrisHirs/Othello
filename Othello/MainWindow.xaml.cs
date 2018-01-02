@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
+using System.Timers;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Data;
@@ -18,17 +20,45 @@ namespace Othello
     /// <summary>
     /// Logique d'interaction pour MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : Window
+    public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        int whiteScore;
+        int blackScore;
+        TimeSpan player1Time;
+        TimeSpan player2Time;
+        DateTime turnStartTime;
         bool turnToWhite = true;
         Rectangle rectHover = new Rectangle();
         Board board = new Board();
+
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        public int WhiteScore
+        {
+            set { whiteScore = value; RaisePropertyChanged("WhiteScore"); }
+        }
+        public int BlackScore
+        {
+            set { blackScore = value; RaisePropertyChanged("BlackScore"); }
+        }
+        void RaisePropertyChanged(string propertyName)
+        {
+            if(PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+            }
+        }
         public MainWindow()
         {
+            player1Time = new TimeSpan();
+            player2Time = new TimeSpan();
+            turnStartTime = DateTime.Now;
             InitializeComponent();
             ImageBrush bgImage = new ImageBrush();
             bgImage.ImageSource = new BitmapImage(new Uri(@"imgs\BackgroundOthello.jpg", UriKind.Relative));
             this.Background = bgImage;
+            whiteScore = 2;
+            blackScore = 2;
         }
 
         private void BoardHover(object sender, MouseEventArgs e)
@@ -93,14 +123,14 @@ namespace Othello
 
         private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
         {
-            int boardDimensions = (int)Width - 50;
+            /*int boardDimensions = (int)Width - 50;
             if (Height < Width)
             {
                 boardDimensions = (int)Height - 100;
             }
             canBoard.Height = boardDimensions;
             canBoard.Width = canBoard.Height;
-            printBoard();
+            printBoard();*/
         }
         private void printBoard()
         {
@@ -215,6 +245,35 @@ namespace Othello
                 board.PlayMove(squareIdI, squareIdJ, turnToWhite);
                 turnToWhite = !turnToWhite;
             }
+            printBoard();
+            this.WhiteScore = board.GetWhiteScore();
+            this.BlackScore = board.GetBlackScore();
+            lblDebug.Content = whiteScore;
+
+            if (turnToWhite)
+            {
+                player1Time += DateTime.Now - turnStartTime;
+            }
+            lblDebug.Content = player1Time.ToString("g");
+            turnStartTime = DateTime.Now;
+        }
+
+        private void btnMenuEnter(object sender, MouseEventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.Opacity = 1;
+        }
+
+        private void btnMenuLeave(object sender, MouseEventArgs e)
+        {
+            Button btn = (Button)sender;
+            btn.Opacity = 0.7;
+        }
+
+        private void btnNew_Click(object sender, RoutedEventArgs e)
+        {
+            board = new Board();
+            turnToWhite = true;
             printBoard();
         }
     }
