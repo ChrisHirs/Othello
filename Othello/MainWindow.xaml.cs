@@ -10,6 +10,7 @@ using System.Windows.Controls;
 using System.Windows.Data;
 using System.Windows.Documents;
 using System.Windows.Input;
+using System.Windows.Interop;
 using System.Windows.Media;
 using System.Windows.Media.Imaging;
 using System.Windows.Navigation;
@@ -23,6 +24,7 @@ namespace Othello
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
+        bool isPlaying;
         int whiteScore;
         int blackScore;
         TimeSpan player1TimeS;
@@ -34,6 +36,8 @@ namespace Othello
         bool turnToWhite = true;
         Rectangle rectHover = new Rectangle();
         Board board = new Board();
+        System.Drawing.Bitmap skinPlayer1 = Properties.Resources.m_banana;
+        System.Drawing.Bitmap skinPlayer2 = Properties.Resources.m_blueberry;
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -57,6 +61,9 @@ namespace Othello
             get { return player2Time; }
             set { player2Time = value; RaisePropertyChanged("Player2Time"); }
         }
+
+        public BitmapSource BitmapSource { get; }
+
         void RaisePropertyChanged(string propertyName)
         {
             if(PropertyChanged != null)
@@ -66,74 +73,76 @@ namespace Othello
         }
         public MainWindow()
         {
-            mainTimer = new DispatcherTimer();
-            mainTimer.Tick += new EventHandler(updateTimeStrings);
-            mainTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
-            mainTimer.Start();
+            isPlaying = false;
+            InitializeComponent();
+            /*ImageBrush bgImage = new ImageBrush();
+            bgImage.ImageSource = new BitmapImage(new Uri(@"imgs\BackgroundOthello.jpg", UriKind.Relative));
+            BitmapSource = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.BackgroundOthello.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());*/
+            this.Background = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.BackgroundOthello.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
             player1TimeS = new TimeSpan();
             player2TimeS = new TimeSpan();
-            Player2Time = player1TimeS.ToString("mm\\:ss\\:ff");
-            turnStartTime = DateTime.Now;
-            InitializeComponent();
-            ImageBrush bgImage = new ImageBrush();
-            bgImage.ImageSource = new BitmapImage(new Uri(@"imgs\BackgroundOthello.jpg", UriKind.Relative));
-            this.Background = bgImage;
-            whiteScore = 2;
-            blackScore = 2;
+            Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
+            Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
         }
 
         private void BoardHover(object sender, MouseEventArgs e)
         {
-            rectHover.Name = "hoverRect";
-            
-            double h = canBoard.ActualHeight;
-            double dH = h / 8.0;
-            double w = canBoard.ActualWidth;
-            double dW = w / 8.0;
-
-            double eX = e.GetPosition(canBoard).X;
-            double eY = e.GetPosition(canBoard).Y;
-
-            rectHover.Width = dW;
-            rectHover.Height = dH;
-
-            int squareIdI = (int)(eX / dW);
-            int squareIdJ = (int)(eY / dH);
-
-            ImageBrush playerBrush = new ImageBrush();
-            if (turnToWhite)
+            if (isPlaying)
             {
-                playerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_blueberry.png", UriKind.Relative));
-            }
-            else
-            {
-                playerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_mango.png", UriKind.Relative));
-            }
-            rectHover.Fill = playerBrush;
-            
-            if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite)){
+                rectHover.Name = "hoverRect";
 
-                Canvas.SetTop(rectHover, (squareIdJ * dH));
-                Canvas.SetLeft(rectHover, (squareIdI * dW));
-                playerBrush.Opacity = 0.55;
-            } else
-            {
+                double h = canBoard.ActualHeight;
+                double dH = h / 8.0;
+                double w = canBoard.ActualWidth;
+                double dW = w / 8.0;
 
-                Canvas.SetTop(rectHover, eY - dH / 2);
-                Canvas.SetLeft(rectHover, eX - dW / 2);
-                playerBrush.Opacity = 0.2;
-            }
-            
-            rectHover.InvalidateVisual();
-            if (canBoard.Children.Contains(rectHover))
-            {
-                if(eX > w || eX > h || eX < 0 || eY < 0)
+                double eX = e.GetPosition(canBoard).X;
+                double eY = e.GetPosition(canBoard).Y;
+
+                rectHover.Width = dW;
+                rectHover.Height = dH;
+
+                int squareIdI = (int)(eX / dW);
+                int squareIdJ = (int)(eY / dH);
+
+                ImageBrush playerBrush = new ImageBrush();
+                if (turnToWhite)
                 {
-                    canBoard.Children.Remove(rectHover);
+                    playerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer1.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
                 }
-            } else
-            {
-                canBoard.Children.Add(rectHover);
+                else
+                {
+                    playerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer2.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
+                }
+                rectHover.Fill = playerBrush;
+
+                if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
+                {
+
+                    Canvas.SetTop(rectHover, (squareIdJ * dH));
+                    Canvas.SetLeft(rectHover, (squareIdI * dW));
+                    playerBrush.Opacity = 0.55;
+                }
+                else
+                {
+
+                    Canvas.SetTop(rectHover, eY - dH / 2);
+                    Canvas.SetLeft(rectHover, eX - dW / 2);
+                    playerBrush.Opacity = 0.2;
+                }
+
+                rectHover.InvalidateVisual();
+                if (canBoard.Children.Contains(rectHover))
+                {
+                    if (eX > w || eX > h || eX < 0 || eY < 0)
+                    {
+                        canBoard.Children.Remove(rectHover);
+                    }
+                }
+                else
+                {
+                    canBoard.Children.Add(rectHover);
+                }
             }
         }
 
@@ -199,9 +208,9 @@ namespace Othello
 
             canBoard.Children.Add(textileFilter);
             ImageBrush whitePlayerBrush = new ImageBrush();
-            whitePlayerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_blueberry.png", UriKind.Relative));
+            whitePlayerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer1.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             ImageBrush blackPlayerBrush = new ImageBrush();
-            blackPlayerBrush.ImageSource = new BitmapImage(new Uri(@"imgs\m_mango.png", UriKind.Relative));
+            blackPlayerBrush.ImageSource = Imaging.CreateBitmapSourceFromHBitmap(skinPlayer2.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
@@ -244,26 +253,26 @@ namespace Othello
 
         private void canBoard_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            double dH = canBoard.ActualHeight / 8.0;
-            double dW = canBoard.ActualWidth / 8.0;
-
-            double eX = e.GetPosition(canBoard).X;
-            double eY = e.GetPosition(canBoard).Y;
-
-            int squareIdI = (int)(eX / dW);
-            int squareIdJ = (int)(eY / dH);
-
-            if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
+            if (isPlaying)
             {
-                board.PlayMove(squareIdI, squareIdJ, turnToWhite);
-                turnToWhite = !turnToWhite;
-            }
-            printBoard();
-            this.WhiteScore = board.GetWhiteScore();
-            this.BlackScore = board.GetBlackScore();
-            lblDebug.Content = whiteScore;
+                double dH = canBoard.ActualHeight / 8.0;
+                double dW = canBoard.ActualWidth / 8.0;
 
-            
+                double eX = e.GetPosition(canBoard).X;
+                double eY = e.GetPosition(canBoard).Y;
+
+                int squareIdI = (int)(eX / dW);
+                int squareIdJ = (int)(eY / dH);
+
+                if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
+                {
+                    board.PlayMove(squareIdI, squareIdJ, turnToWhite);
+                    turnToWhite = !turnToWhite;
+                }
+                printBoard();
+                this.WhiteScore = board.GetWhiteScore();
+                this.BlackScore = board.GetBlackScore();
+            }
         }
 
         private void btnMenuEnter(object sender, MouseEventArgs e)
@@ -280,26 +289,42 @@ namespace Othello
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
         {
-            player1TimeS = new TimeSpan();
-            player2TimeS = new TimeSpan(); 
-            Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
-            board = new Board();
-            turnToWhite = true;
+            startGame();
+            isPlaying = true;
             printBoard();
         }
         private void updateTimeStrings(object sender, EventArgs e)
         {
-            if (!turnToWhite)
+            if (isPlaying)
             {
-                player2TimeS += DateTime.Now - turnStartTime;
-                Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
+                if (!turnToWhite)
+                {
+                    player2TimeS += DateTime.Now - turnStartTime;
+                    Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
+                }
+                else
+                {
+                    player1TimeS += DateTime.Now - turnStartTime;
+                    Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
+                }
+                turnStartTime = DateTime.Now;
             }
-            else
-            {
-                player1TimeS += DateTime.Now - turnStartTime;
-                Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
-            }
+        }
+        private void startGame()
+        {
+            player1TimeS = new TimeSpan();
+            player2TimeS = new TimeSpan();
+            Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
+            Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
+            board = new Board();
+            turnToWhite = true;
+            mainTimer = new DispatcherTimer();
+            mainTimer.Tick += new EventHandler(updateTimeStrings);
+            mainTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
+            mainTimer.Start();
             turnStartTime = DateTime.Now;
+            whiteScore = 2;
+            blackScore = 2;
         }
     }
 }

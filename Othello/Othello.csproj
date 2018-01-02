@@ -36,6 +36,7 @@
   <ItemGroup>
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Drawing" />
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="System.Core" />
@@ -94,6 +95,69 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\BackgroundOthello.jpg" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_almond.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_banana.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_blueberry.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_caramel.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_cherry.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_chocolate.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_coffee.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_grape.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_honey-lemon.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_kiwi.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_mango.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_mint.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_orange.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_peach.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_raspberry.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_rose.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_stawberry.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_strawberry.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\m_vanilla.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="imgs\texttexture.png" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
