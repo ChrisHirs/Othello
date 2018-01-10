@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.Diagnostics;
 using System.Linq;
 using System.Runtime.Serialization;
 using System.Text;
@@ -263,7 +264,9 @@ namespace Othello
 
         private void canBoard_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            if (isPlaying)
+            Debug.WriteLine("_____________________--_ ");
+            
+            if (isPlaying && (!isIA || turnToWhite))
             {
                 double dH = canBoard.ActualHeight / 8.0;
                 double dW = canBoard.ActualWidth / 8.0;
@@ -279,10 +282,18 @@ namespace Othello
                     board.PlayMove(squareIdI, squareIdJ, turnToWhite);
                     turnToWhite = !turnToWhite;
                 }
-                printBoard();
-                this.WhiteScore = board.GetWhiteScore();
-                this.BlackScore = board.GetBlackScore();
             }
+            if (isPlaying && isIA && !turnToWhite)
+            {
+                Debug.WriteLine("_START IA_");
+                Tuple<int, int> IA = board.GetNextMove(board.GetBoard(), 4, turnToWhite);
+                Debug.WriteLine("IA : " + IA.ToString());
+                board.PlayMove(IA.Item1, IA.Item2, turnToWhite);
+                turnToWhite = !turnToWhite;
+            }
+            printBoard();
+            this.WhiteScore = board.GetWhiteScore();
+            this.BlackScore = board.GetBlackScore();
         }
 
         private void btnMenuEnter(object sender, MouseEventArgs e)
