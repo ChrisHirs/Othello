@@ -33,6 +33,7 @@ namespace Othello
         }
         bool isSkinForPlayer1;
         bool isPlaying;
+        bool wasPlaying;
         int whiteScore;
         int blackScore;
         TimeSpan player1TimeS;
@@ -338,6 +339,7 @@ namespace Othello
 
         private void ChangeSkin(object sender, RoutedEventArgs e)
         {
+            wasPlaying = isPlaying;
             if(((Button)sender).Name == btnSkinPlayerA.Name)
             {
                 isSkinForPlayer1 = true;
@@ -351,7 +353,10 @@ namespace Othello
 
         private void btnSelectSkin(object sender, RoutedEventArgs e)
         {
-            isPlaying = true;
+            if(wasPlaying)
+            {
+                isPlaying = true;
+            }
             turnStartTime = DateTime.Now;
             grdSkinSelector.Visibility = Visibility.Hidden;
             if (isSkinForPlayer1)

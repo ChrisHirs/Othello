@@ -53,7 +53,58 @@ namespace Othello
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
+            int opponentMark = 0;
+            int playerMark = 1;
+            if (whiteTurn)
+            {
+                opponentMark = 1;
+                playerMark = 0;
+            }
+
+
+
+
+            EvalBoard(playerMark, opponentMark);
             throw new NotImplementedException();
+        }
+        public int alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int playerMark, int opponentMark)
+        {
+            if(depth == 0 || isFinal(board))
+            {
+                return EvalBoard(playerMark, opponentMark);
+            }
+            int optVal = minOrMax * Int32.MaxValue - 1;
+        }
+        public bool isFinal(int[,] board)
+        {
+            return true;
+        }
+        public int EvalBoard(int playerMark, int opponentMark)
+        {
+            int result = 0;
+            int force = 1;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (boardState[i, j] == 1)
+                    {
+                        force = 1;
+                        if((i == 0 || i == 7 || i == 0 || i == 7))
+                        {
+                            force = 2;
+                        }
+                        if(boardState[i,j] == playerMark)
+                        {
+                            result += force;
+                        } else if (boardState[i, j] == opponentMark)
+                        {
+                            result -= force;
+                        }
+                    }
+                }
+            }
+            return result;
         }
 
         public int GetWhiteScore()
