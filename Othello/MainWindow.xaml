@@ -7,7 +7,6 @@
         xmlns:local="clr-namespace:Othello"
         mc:Ignorable="d"
         Title="MainWindow" Height="668" Width="862.574" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded" MinWidth="800" MinHeight="600">
-
     <Window.Background>
         <ImageBrush/>
     </Window.Background>

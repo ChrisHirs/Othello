@@ -99,64 +99,104 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\BackgroundOthello.jpg" />
+    <EmbeddedResource Include="imgs\BackgroundOthello.jpg">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_almond.png" />
+    <EmbeddedResource Include="imgs\m_almond.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_banana.png" />
+    <EmbeddedResource Include="imgs\m_banana.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_blueberry.png" />
+    <EmbeddedResource Include="imgs\m_blueberry.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_caramel.png" />
+    <EmbeddedResource Include="imgs\m_caramel.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_cherry.png" />
+    <EmbeddedResource Include="imgs\m_cherry.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_chocolate.png" />
+    <EmbeddedResource Include="imgs\m_chocolate.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_coffee.png" />
+    <EmbeddedResource Include="imgs\m_coffee.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_grape.png" />
+    <EmbeddedResource Include="imgs\m_grape.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_honey-lemon.png" />
+    <EmbeddedResource Include="imgs\m_honey-lemon.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_kiwi.png" />
+    <EmbeddedResource Include="imgs\m_kiwi.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_mango.png" />
+    <EmbeddedResource Include="imgs\m_mango.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_mint.png" />
+    <EmbeddedResource Include="imgs\m_mint.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_orange.png" />
+    <EmbeddedResource Include="imgs\m_orange.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_peach.png" />
+    <EmbeddedResource Include="imgs\m_peach.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_raspberry.png" />
+    <EmbeddedResource Include="imgs\m_raspberry.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_rose.png" />
+    <EmbeddedResource Include="imgs\m_rose.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_strawberry.png" />
+    <EmbeddedResource Include="imgs\m_strawberry.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\m_vanilla.png" />
+    <EmbeddedResource Include="imgs\m_vanilla.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
-    <None Include="imgs\texttexture.png" />
+    <EmbeddedResource Include="imgs\texttexture.png">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
