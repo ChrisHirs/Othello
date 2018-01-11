@@ -7,6 +7,23 @@
         xmlns:local="clr-namespace:Othello"
         mc:Ignorable="d"
         Title="MainWindow" Height="668" Width="862.574" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded" MinWidth="800" MinHeight="600">
+    <Window.Resources>
+        <BitmapImage x:Key="img_caramel" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_caramel.png"/>
+        <BitmapImage x:Key="img_cherry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_cherry.png"/>
+        <BitmapImage x:Key="img_chocolate" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_chocolate.png"/>
+        <BitmapImage x:Key="img_blueberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_blueberry.png"/>
+        <BitmapImage x:Key="img_banana" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_banana.png"/>
+        <BitmapImage x:Key="img_almond" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_almond.png"/>
+        <BitmapImage x:Key="img_coffee" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_coffee.png"/>
+        <BitmapImage x:Key="img_grape" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_grape.png"/>
+        <BitmapImage x:Key="img_honey_lemon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_honey-lemon.png"/>
+        <BitmapImage x:Key="img_kiwi" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_kiwi.png"/>
+        <BitmapImage x:Key="img_mango" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_mango.png"/>
+        <BitmapImage x:Key="img_mint" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_mint.png"/>
+        <BitmapImage x:Key="img_vanilla" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_vanilla.png"/>
+        <BitmapImage x:Key="img_strawberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_strawberry.png"/>
+        <BitmapImage x:Key="img_rose" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_rose.png"/>
+    </Window.Resources>
     <Window.BorderBrush>
         <ImageBrush/>
     </Window.BorderBrush>
@@ -100,7 +117,7 @@
                         <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="2" Direction="300"/>
                     </Label.Effect>
                 </Label>
-                <Label Content="Player 2" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="213" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
+                <Label x:Name="lblPlayer2" Content="Player 2" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="213" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
                     <Label.Effect>
                         <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="2" Direction="300"/>
                     </Label.Effect>
@@ -129,92 +146,92 @@
                     </Grid.RowDefinitions>
                     <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_almond.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_almond}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_banana.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_banana}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_blueberry.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_blueberry}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_caramel.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_caramel}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="4" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_cherry.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_cherry}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="5" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_chocolate.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_chocolate}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_coffee.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_coffee}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="1" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_grape.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_grape}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="1" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_honey-lemon.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_honney_lemon}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="1" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_kiwi.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_kiwi}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="4" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="1" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_mango.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_mango}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="5" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="1" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_mint.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_mint}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="289" Height="285">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_orange.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_orange}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="2" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_peach.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_peach}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="2" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="2" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_raspberry.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_raspberry}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="3" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="2" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_rose.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_rose}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="4" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="288" Height="285" Grid.Row="2" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_strawberry.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_strawberry}"/>
                         </Button.Background>
                     </Button>
                     <Button Content="" Grid.Column="5" HorizontalAlignment="Left" Margin="10,10,0,0" VerticalAlignment="Top" Width="289" Height="285" Grid.Row="2" Click="btnSelectSkin">
                         <Button.Background>
-                            <ImageBrush ImageSource="pack://siteoforigin:,,,/imgs/m_vanilla.png"/>
+                            <ImageBrush ImageSource="{DynamicResource im_vanilla}"/>
                         </Button.Background>
                     </Button>
                 </Grid>

@@ -4,6 +4,28 @@
              xmlns:local="clr-namespace:Othello"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-         
+
+        <BitmapImage x:Key="img_raspberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_raspberry.png"/>
+        <BitmapImage x:Key="img_peach" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_peach.png"/>
+        <BitmapImage x:Key="img_orange" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_orange.png"/>
+        <BitmapImage x:Key="im_almond" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_almond.png"/>
+        <BitmapImage x:Key="im_banana" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_banana.png"/>
+        <BitmapImage x:Key="im_blueberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_blueberry.png"/>
+        <BitmapImage x:Key="im_caramel" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_caramel.png"/>
+        <BitmapImage x:Key="im_cherry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_cherry.png"/>
+        <BitmapImage x:Key="im_chocolate" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_chocolate.png"/>
+        <BitmapImage x:Key="im_mint" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_mint.png"/>
+        <BitmapImage x:Key="im_mango" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_mango.png"/>
+        <BitmapImage x:Key="im_kiwi" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_kiwi.png"/>
+        <BitmapImage x:Key="im_honney_lemon" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_honey-lemon.png"/>
+        <BitmapImage x:Key="im_grape" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_grape.png"/>
+        <BitmapImage x:Key="im_coffee" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_coffee.png"/>
+        <BitmapImage x:Key="im_orange" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_orange.png"/>
+        <BitmapImage x:Key="im_peach" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_peach.png"/>
+        <BitmapImage x:Key="im_raspberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_raspberry.png"/>
+        <BitmapImage x:Key="im_rose" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_rose.png"/>
+        <BitmapImage x:Key="im_strawberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_strawberry.png"/>
+        <BitmapImage x:Key="im_vanilla" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="E:\NET\TP1\GIT\Othello\Othello\imgs\m_vanilla.png"/>
+
     </Application.Resources>
 </Application>

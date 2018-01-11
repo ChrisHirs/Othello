@@ -48,8 +48,9 @@ namespace Othello
         public Board board = new Board();
         int skinIdPlayer1;
         int skinIdPlayer2;
-        Brush skinPlayer1 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_banana.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
-        Brush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        Brush skinPlayer1 = new ImageBrush((ImageSource)(Application.Current.Resources["im_banana"]));
+        //Brush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        Brush skinPlayer2 = new ImageBrush((ImageSource)(Application.Current.Resources["im_kiwi"]));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -286,9 +287,13 @@ namespace Othello
             if (isPlaying && isIA && !turnToWhite)
             {
                 Debug.WriteLine("_START IA_");
+
                 Tuple<int, int> IA = board.GetNextMove(board.GetBoard(), 4, turnToWhite);
-                Debug.WriteLine("IA : " + IA.ToString());
-                board.PlayMove(IA.Item1, IA.Item2, turnToWhite);
+                if(IA == null)
+                {
+                    Debug.WriteLine("IA : " + IA.ToString());
+                    board.PlayMove(IA.Item1, IA.Item2, turnToWhite);
+                }
                 turnToWhite = !turnToWhite;
             }
             printBoard();
@@ -387,10 +392,12 @@ namespace Othello
             if (isIA)
             {
                 isIA = false;
+                lblPlayer2.Content = "Player 2";
             }
             else
             {
                 isIA = true;
+                lblPlayer2.Content = "IA";
             }
         }
 

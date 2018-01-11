@@ -63,38 +63,47 @@ namespace Othello
                 playerMark = 0;
             }
 
-            int val = EvalBoard(boardState, playerMark, opponentMark);
+            int val = EvalBoard(boardState, whiteTurn);
             int res;
             Tuple<int, int> op;
-            alphabeta(boardState, level, playerMark, val, playerMark, opponentMark, out res, out op);
-
+            alphabeta(boardState, level, playerMark, val, playerMark, opponentMark, whiteTurn, out res, out op);
+            Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + ">");
             return op;
         }
-        public void alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int playerMark, int opponentMark, out int val, out Tuple<int, int> op)
+        public void alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int localplayerMark, int localopponentMark, bool globalIsWhite, out int val, out Tuple<int, int> op)
         {
             Debug.WriteLine("Depth : " + depth);
             Debug.WriteLine("bard : " + board);
-            if (depth < 0)
+            if (depth > 0)
             {
-                op = null;
+                op = Tuple.Create(-1, -1); ;
                 val = minOrMax * Int32.MaxValue - 1;
-                bool whiteTurn = true;
-                if (playerMark == 1)
+                bool localwhiteTurn = true;
+                if (localplayerMark == 1)
                 {
-                    whiteTurn = false;
+                    localwhiteTurn = false;
                 }
                 for (int i = 0; i < 8; i++)
                 {
                     for (int j = 0; j < 8; j++)
                     {
-                        if (IsPlayableGeneric(boardState, i, j, whiteTurn))
+                        if (IsPlayableGeneric(board, i, j, localwhiteTurn))
                         {
+                            Debug.WriteLine("ij : (" + i + ", " + j + ") and depth : " + depth);
+                            //Debug.Write(debugBoard(board));
                             int[,] newboard = (int[,])board.Clone();
-                            newboard[i, j] = playerMark;
+                            newboard[i, j] = localplayerMark ;
+                            changeSquaresAfterPlay(ref newboard, i, j, localwhiteTurn);
+                            //Debug.WriteLine("set new[" + i + ", " + j + "] to " + localplayerMark);
+                            //Debug.WriteLine("\nThe new one : ");
+                            //Debug.Write(debugBoard(newboard) + "\n");
                             int newVal;
                             Tuple<int, int> dummy;
-                            alphabeta(newboard, depth - 1, minOrMax, val, playerMark, opponentMark, out newVal, out dummy);
-                            if(newVal * minOrMax > val * minOrMax)
+                            alphabeta(newboard, depth - 1, minOrMax * -1, val, localplayerMark, localopponentMark, globalIsWhite, out newVal, out dummy);
+                            Debug.WriteLine("()()()()()()()()()()()()()())()()()()()()()()(");
+                            Debug.WriteLine("newVal : " + newVal + ", val : " + val + ", and minOrMax : " + minOrMax + ", depth = " + (depth - 1));
+                            Debug.WriteLine("()()()()()()()()()()()()()())()()()()()()()()(\n");
+                            if (newVal * minOrMax > val * minOrMax)
                             {
                                 val = newVal;
                                 op = Tuple.Create(i,j);
@@ -110,18 +119,46 @@ namespace Othello
             }
             else
             {
-                val = EvalBoard(board, playerMark, opponentMark);
-                op = null;
+                val = EvalBoard(board, globalIsWhite);
+                op = Tuple.Create(-1,-1);
             }
-            
+             Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + "> and depth : " + depth + "\n\n");
+        }
+        public string debugBoard(int[,] b)
+        {
+            string str = "---------------------------------\n";
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if(b[i, j] == -1)
+                    {
+                        str += "|" + b[i, j] + " ";
+                    }
+                    else
+                    {
+                        str += "| " + b[i, j] + " ";
+                    }
+                }
+                str += "|\n";
+                str += "---------------------------------\n";
+            }
+            return str;
         }
         public bool isFinal(int[,] board)
         {
 
             return true;
         }
-        public int EvalBoard(int[,] board, int playerMark, int opponentMark)
+        public int EvalBoard(int[,] board, bool isWhite)
         {
+            int opponentMark = 0;
+            int playerMark = 1;
+            if (isWhite)
+            {
+                opponentMark = 1;
+                playerMark = 0;
+            }
             int result = 0;
             int force = 1;
             for (int i = 0; i < 8; i++)
@@ -218,14 +255,14 @@ namespace Othello
 
                     boardState[column, line] = 1;
                 }
-                changeSquaresAfterPlay(column, line, isWhite);
+                changeSquaresAfterPlay(ref boardState, column, line, isWhite);
                 return true;
             } else
             {
                 return false;
             }
         }
-        private void changeSquaresAfterPlay(int column, int line, bool isWhite)
+        private void changeSquaresAfterPlay(ref int[,] b, int column, int line, bool isWhite)
         {
             int opponentMark = 0;
             int playerMark = 1;
@@ -240,9 +277,9 @@ namespace Othello
                 int iIterator = column + directions[i, 0];
                 int jIterator = line + directions[i, 1];
                 bool isDirectionValid = false;
-                while (iIterator >= 0 && jIterator >= 0 && iIterator < 8 && jIterator < 8 && boardState[iIterator, jIterator] != -1)
+                while (iIterator >= 0 && jIterator >= 0 && iIterator < 8 && jIterator < 8 && b[iIterator, jIterator] != -1)
                 {
-                    if (boardState[iIterator, jIterator] == playerMark)
+                    if (b[iIterator, jIterator] == playerMark)
                     {
                         isDirectionValid = true;
                     }
@@ -253,9 +290,9 @@ namespace Othello
                 {
                     iIterator = column + directions[i, 0];
                     jIterator = line + directions[i, 1];
-                    while (boardState[iIterator, jIterator] == opponentMark)
+                    while (b[iIterator, jIterator] == opponentMark)
                     {
-                        boardState[iIterator, jIterator] = playerMark;
+                        b[iIterator, jIterator] = playerMark;
                         iIterator += directions[i, 0];
                         jIterator += directions[i, 1];
                     }
