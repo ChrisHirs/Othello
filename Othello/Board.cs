@@ -72,7 +72,7 @@ namespace Othello
         }
         public void alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int localplayerMark, int localopponentMark, bool globalIsWhite, out int val, out Tuple<int, int> op)
         {
-            Debug.WriteLine("Depth : " + depth);
+            /*Debug.WriteLine("Depth : " + depth);
             Debug.WriteLine("bard : " + board);
             if (depth > 0)
             {
@@ -122,7 +122,9 @@ namespace Othello
                 val = EvalBoard(board, globalIsWhite);
                 op = Tuple.Create(-1,-1);
             }
-             Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + "> and depth : " + depth + "\n\n");
+             Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + "> and depth : " + depth + "\n\n");*/
+            val = EvalBoard(board, globalIsWhite);
+            op = Tuple.Create(-1, -1);
         }
         public string debugBoard(int[,] b)
         {
