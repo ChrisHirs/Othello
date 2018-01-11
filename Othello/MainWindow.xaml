@@ -103,7 +103,7 @@
                         <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="2" Direction="300"/>
                     </Label.Effect>
                 </Label>
-                <Label x:Name="lblPlayer2" Content="Player 2" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="213" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
+                <Label x:Name="lblPlayer2" Content="I.A." Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="213" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
                     <Label.Effect>
                         <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="2" Direction="300"/>
                     </Label.Effect>
@@ -116,6 +116,23 @@
                         </RadialGradientBrush>
                     </Button.Background>
                 </Button>
+                <Label x:Name="lblWinner" Margin="-1083,77,615,21" Grid.Row="5" Content="The winner is : Player  1" Visibility="Hidden" FontFamily="Rage Italic" FontSize="72" HorizontalAlignment="Center" Foreground="#FFFF4E27" RenderTransformOrigin="0.508,0.508" Width="700" VerticalContentAlignment="Center" HorizontalContentAlignment="Center">
+                    <Label.RenderTransform>
+                        <TransformGroup>
+                            <ScaleTransform ScaleX="2" ScaleY="2"/>
+                            <SkewTransform/>
+                            <RotateTransform/>
+                            <TranslateTransform/>
+                        </TransformGroup>
+                    </Label.RenderTransform>
+                    <Label.Background>
+                        <RadialGradientBrush>
+                            <GradientStop Color="#66000000" Offset="0.236"/>
+                            <GradientStop Offset="1"/>
+                            <GradientStop Color="#CB333333"/>
+                        </RadialGradientBrush>
+                    </Label.Background>
+                </Label>
                 <Grid x:Name="grdSkinSelector" HorizontalAlignment="Left" Height="915" Margin="-1417,98,0,0" VerticalAlignment="Top" Width="1852" Grid.RowSpan="8" Grid.ColumnSpan="2" Background="#7FFFFFFF" Grid.Row="1" Visibility="Hidden">
                     <Grid.ColumnDefinitions>
                         <ColumnDefinition Width="1*" />

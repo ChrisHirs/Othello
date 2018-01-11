@@ -5,6 +5,11 @@ namespace Othello
 {
     public class Board : IPlayable
     {
+        bool ended = false;
+        public bool Ended
+        {
+            get; set;
+        }
         int[,] boardState;
         public int[,] BoardState
         {
@@ -72,12 +77,10 @@ namespace Othello
         }
         public void alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int localplayerMark, int localopponentMark, bool globalIsWhite, out int val, out Tuple<int, int> op)
         {
-            /*Debug.WriteLine("Depth : " + depth);
-            Debug.WriteLine("bard : " + board);
             if (depth > 0)
             {
                 op = Tuple.Create(-1, -1); ;
-                val = minOrMax * Int32.MaxValue - 1;
+                val = minOrMax * -Int32.MaxValue - 1;
                 bool localwhiteTurn = true;
                 if (localplayerMark == 1)
                 {
@@ -89,20 +92,12 @@ namespace Othello
                     {
                         if (IsPlayableGeneric(board, i, j, localwhiteTurn))
                         {
-                            Debug.WriteLine("ij : (" + i + ", " + j + ") and depth : " + depth);
-                            //Debug.Write(debugBoard(board));
                             int[,] newboard = (int[,])board.Clone();
                             newboard[i, j] = localplayerMark ;
                             changeSquaresAfterPlay(ref newboard, i, j, localwhiteTurn);
-                            //Debug.WriteLine("set new[" + i + ", " + j + "] to " + localplayerMark);
-                            //Debug.WriteLine("\nThe new one : ");
-                            //Debug.Write(debugBoard(newboard) + "\n");
                             int newVal;
                             Tuple<int, int> dummy;
                             alphabeta(newboard, depth - 1, minOrMax * -1, val, localplayerMark, localopponentMark, globalIsWhite, out newVal, out dummy);
-                            Debug.WriteLine("()()()()()()()()()()()()()())()()()()()()()()(");
-                            Debug.WriteLine("newVal : " + newVal + ", val : " + val + ", and minOrMax : " + minOrMax + ", depth = " + (depth - 1));
-                            Debug.WriteLine("()()()()()()()()()()()()()())()()()()()()()()(\n");
                             if (newVal * minOrMax > val * minOrMax)
                             {
                                 val = newVal;
@@ -122,35 +117,14 @@ namespace Othello
                 val = EvalBoard(board, globalIsWhite);
                 op = Tuple.Create(-1,-1);
             }
-             Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + "> and depth : " + depth + "\n\n");*/
-            val = EvalBoard(board, globalIsWhite);
-            op = Tuple.Create(-1, -1);
-        }
-        public string debugBoard(int[,] b)
-        {
-            string str = "---------------------------------\n";
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    if(b[i, j] == -1)
-                    {
-                        str += "|" + b[i, j] + " ";
-                    }
-                    else
-                    {
-                        str += "| " + b[i, j] + " ";
-                    }
-                }
-                str += "|\n";
-                str += "---------------------------------\n";
-            }
-            return str;
         }
         public bool isFinal(int[,] board)
         {
-
-            return true;
+            if (countPlayableSquares(board, true) == 0 && countPlayableSquares(board, false) == 0)
+            {
+                return true;
+            }
+            return false;
         }
         public int EvalBoard(int[,] board, bool isWhite)
         {
@@ -170,11 +144,15 @@ namespace Othello
                     if (board[i, j] != -1)
                     {
                         force = 1;
-                        if((i == 0 || i == 7 || i == 0 || i == 7))
+                        if(i == 0 || i == 7)
                         {
-                            force = 2;
+                            force*=2;
                         }
-                        if(board[i,j] == playerMark)
+                        if (j == 0 || j == 7)
+                        {
+                            force*=2;
+                        }
+                        if (board[i,j] == playerMark)
                         {
                             result += force;
                         } else if (board[i, j] == opponentMark)
@@ -254,15 +232,44 @@ namespace Othello
                     boardState[column, line] = 0;
                 } else
                 {
-
                     boardState[column, line] = 1;
                 }
                 changeSquaresAfterPlay(ref boardState, column, line, isWhite);
-                return true;
-            } else
+                Debug.WriteLine("nb playable for " + !isWhite + " : " + countPlayableSquares(boardState, !isWhite));
+                Debug.WriteLine("nb playable for " + isWhite + " : " + countPlayableSquares(boardState, isWhite));
+                if (countPlayableSquares(boardState, !isWhite) > 0)
+                {
+                    return true;
+                }
+                else
+                {
+                    if(!(countPlayableSquares(boardState, isWhite) > 0))
+                    {
+                        this.Ended = true;
+                    }
+                    return false;
+                }
+            }
+            else
             {
                 return false;
             }
+            
+        }
+        public int countPlayableSquares(int[,] board, bool isWhite)
+        {
+            int playableSquares = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (IsPlayableGeneric(board, i, j, isWhite))
+                    {
+                        playableSquares++;
+                    }
+                }
+            }
+            return playableSquares;
         }
         private void changeSquaresAfterPlay(ref int[,] b, int column, int line, bool isWhite)
         {

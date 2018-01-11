@@ -87,7 +87,7 @@ namespace Othello
         {
             skinIdPlayer1 = 0;
             skinIdPlayer2 = 0;
-            isIA = false;
+            isIA = true;
             isSkinForPlayer1 = true;
             isPlaying = false;
             InitializeComponent();
@@ -264,8 +264,6 @@ namespace Othello
 
         private void canBoard_MouseUp(object sender, MouseButtonEventArgs e)
         {
-            Debug.WriteLine("_____________________--_ ");
-            
             if (isPlaying && (!isIA || turnToWhite))
             {
                 double dH = canBoard.ActualHeight / 8.0;
@@ -279,21 +277,50 @@ namespace Othello
 
                 if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
                 {
-                    board.PlayMove(squareIdI, squareIdJ, turnToWhite);
-                    turnToWhite = !turnToWhite;
+                    bool changePlayer = board.PlayMove(squareIdI, squareIdJ, turnToWhite);
+                    if(board.Ended)
+                    {
+                        isPlaying = false;
+                        string winner = "1";
+                        if(board.GetBlackScore() > board.GetWhiteScore())
+                        {
+                            winner = lblPlayer2.Content.ToString();
+                        }
+                        lblWinner.Content = "The winner is : " + winner;
+                        lblWinner.Visibility = Visibility.Visible;
+                    }
+                    if (changePlayer)
+                    {
+                        turnToWhite = !turnToWhite;
+                    }
                 }
             }
             if (isPlaying && isIA && !turnToWhite)
             {
-                Debug.WriteLine("_START IA_");
-
-                Tuple<int, int> IA = board.GetNextMove(board.GetBoard(), 4, turnToWhite);
-                if(IA == null)
+                Tuple<int, int> IA = board.GetNextMove(board.GetBoard(), 6, turnToWhite);
+                if(IA != null)
                 {
-                    Debug.WriteLine("IA : " + IA.ToString());
-                    board.PlayMove(IA.Item1, IA.Item2, turnToWhite);
+                    bool changePlayer = false;
+                    while (!changePlayer && !board.Ended)
+                    {
+                        changePlayer = board.PlayMove(IA.Item1, IA.Item2, turnToWhite);
+                        if (board.Ended)
+                        {
+                            isPlaying = false;
+                            lblWinner.Content = "The winner is : Player  1";
+                            if (board.GetBlackScore() > board.GetWhiteScore())
+                            {
+                                lblWinner.Content = "The winner is : " + lblPlayer2.Content;
+                            }
+                            
+                            lblWinner.Visibility = Visibility.Visible;
+                        }
+                        if (changePlayer)
+                        {
+                            turnToWhite = !turnToWhite;
+                        }
+                    }
                 }
-                turnToWhite = !turnToWhite;
             }
             printBoard();
             this.WhiteScore = board.GetWhiteScore();
@@ -337,6 +364,7 @@ namespace Othello
         }
         private void startGame()
         {
+            lblWinner.Visibility = Visibility.Hidden;
             player1TimeS = new TimeSpan();
             player2TimeS = new TimeSpan();
             Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
@@ -396,7 +424,7 @@ namespace Othello
             else
             {
                 isIA = true;
-                lblPlayer2.Content = "IA";
+                lblPlayer2.Content = "I.A.";
             }
         }
 
