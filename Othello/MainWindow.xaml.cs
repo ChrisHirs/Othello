@@ -297,28 +297,31 @@ namespace Othello
             }
             if (isPlaying && isIA && !turnToWhite)
             {
+                Debug.WriteLine("in IA turn");
                 Tuple<int, int> IA = board.GetNextMove(board.GetBoard(), 6, turnToWhite);
                 if(IA != null)
                 {
                     bool changePlayer = false;
                     while (!changePlayer && !board.Ended)
                     {
+                        Debug.WriteLine("in while");
                         changePlayer = board.PlayMove(IA.Item1, IA.Item2, turnToWhite);
                         if (board.Ended)
                         {
+                            Debug.WriteLine("in if board ended");
                             isPlaying = false;
                             lblWinner.Content = "The winner is : Player  1";
                             if (board.GetBlackScore() > board.GetWhiteScore())
                             {
                                 lblWinner.Content = "The winner is : " + lblPlayer2.Content;
                             }
-                            
                             lblWinner.Visibility = Visibility.Visible;
                         }
-                        if (changePlayer)
-                        {
-                            turnToWhite = !turnToWhite;
-                        }
+                    }
+                    if (changePlayer)
+                    {
+                        Debug.WriteLine("changing player");
+                        turnToWhite = !turnToWhite;
                     }
                 }
             }

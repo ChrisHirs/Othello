@@ -202,7 +202,7 @@ namespace Othello
                 int[,] directions = new int[8, 2] { { -1, -1 }, { 0, -1 }, { 1, -1 }, { -1, 0 }, { 1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 } };
                 for (int i = 0; i < 8; i++)
                 {
-                    if (column + directions[i, 0] < 8 && column + directions[i, 0] > 0 && line + directions[i, 1] < 8 && line + directions[i, 1] > 0)
+                    if (column + directions[i, 0] < 8 && column + directions[i, 0] >= 0 && line + directions[i, 1] < 8 && line + directions[i, 1] >= 0)
                     {
                         if (board[column + directions[i, 0], line + directions[i, 1]] == opponentMark)
                         {
