@@ -207,7 +207,7 @@
                             <ImageBrush ImageSource="{DynamicResource im_mint}"/>
                         </Button.Background>
                     </Button>
-                    <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="289" Height="285">
+                    <Button Content="" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="289" Height="285" Click="btnSelectSkin">
                         <Button.Background>
                             <ImageBrush ImageSource="{DynamicResource im_orange}"/>
                         </Button.Background>

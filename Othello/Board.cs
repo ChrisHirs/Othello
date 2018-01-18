@@ -5,6 +5,7 @@ namespace Othello
 {
     public class Board : IPlayable
     {
+        int[,] evalTab;
         bool ended = false;
         public bool Ended
         {
@@ -18,11 +19,13 @@ namespace Othello
         public Board()
         {
             boardState = new int[8,8];
+            evalTab = new int[8,8];
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     boardState[i, j] = -1;
+                    evalTab[i, j] = 0;
                 }
             }
             boardState[3, 3] = 0;
@@ -59,6 +62,31 @@ namespace Othello
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
+            for(int i = 0; i<8; i++)
+            {
+                Debug.Write("-------------------------\n");
+                for(int j = 0; j<8; j++)
+                {
+                    evalTab[i,j] = Math.Max(Math.Abs((i*2)-7), Math.Abs((j*2)-7)) - 4;
+                    if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
+                    {
+                        evalTab[i, j] = 8;
+                    } else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5))){
+                        evalTab[i, j] = 0;
+                    }
+                    if (evalTab[i, j] < 0)
+                    {
+                        Debug.Write("|" + evalTab[i,j]);
+                    }
+                    else
+                    {
+                        Debug.Write("| " + evalTab[i, j]);
+                    }
+                }
+                Debug.Write("|\n");
+            }
+            Debug.Write("-------------------------");
+
             Debug.WriteLine("GET NEXT MOVE");
             int opponentMark = 0;
             int playerMark = 1;
@@ -97,6 +125,7 @@ namespace Othello
                             changeSquaresAfterPlay(ref newboard, i, j, localwhiteTurn);
                             int newVal;
                             Tuple<int, int> dummy;
+                            //Debug.Write("i = " + i + ", j = " + j + "\n");
                             alphabeta(newboard, depth - 1, minOrMax * -1, val, localplayerMark, localopponentMark, globalIsWhite, out newVal, out dummy);
                             if (newVal * minOrMax > val * minOrMax)
                             {
@@ -128,6 +157,12 @@ namespace Othello
         }
         public int EvalBoard(int[,] board, bool isWhite)
         {
+            int emptySquares = countEmptySquares();
+            int notEndOfGame = 1;
+            if (emptySquares < 20)
+            {
+                notEndOfGame = -1;
+            }
             int opponentMark = 0;
             int playerMark = 1;
             if (isWhite)
@@ -136,33 +171,93 @@ namespace Othello
                 playerMark = 0;
             }
             int result = 0;
-            int force = 1;
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     if (board[i, j] != -1)
                     {
-                        force = 1;
-                        if(i == 0 || i == 7)
-                        {
-                            force*=2;
-                        }
-                        if (j == 0 || j == 7)
-                        {
-                            force*=2;
-                        }
                         if (board[i,j] == playerMark)
                         {
-                            result += force;
+                            if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
+                            {
+                                result += 20;
+                            }
+                            else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5)))
+                            {
+                                if (board[(i/4)*7,(j/4)*7] == -1)
+                                {
+                                    //Debug.WriteLine("i/7 : " + (i / 4) * 7 + "j/7 : " + (j / 4) * 7);
+                                    result -= 12;
+                                }
+                                else if(board[i / 7, j / 7] == playerMark)
+                                {
+                                    result += 12;
+                                } else
+                                {
+                                    result += 3;
+                                }
+
+                            } else
+                            {
+                                result += evalTab[i, j] * notEndOfGame;
+                            }
+                            
                         } else if (board[i, j] == opponentMark)
                         {
-                            result -= force;
+                            if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
+                            {
+                                result -= 8;
+                            }
+                            else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5)))
+                            {
+                                result += 0;
+                            }
+                            else
+                            {
+                                result -= evalTab[i, j] * notEndOfGame;
+                            }
                         }
                     }
                 }
             }
+            //Debug.WriteLine("and result is : " + result);
+            int fact = 10;
+            if (!isWhite)
+            {
+                result -= GetWhiteScore() * fact * notEndOfGame;
+            } else
+            {
+                result -= GetBlackScore() * fact * notEndOfGame;
+            }
+            //Debug.WriteLine("and result - score is : " + result);
+            // parité
+            if((isWhite && countEmptySquares() % 2 == 0) || (!isWhite && countEmptySquares() % 2 == 1))
+            {
+                Debug.Write("!!!!!!!");
+                if (countPlayableSquares(board, !isWhite) == 0)
+                {
+                    result += 200;
+                    Debug.Write("+ 200 !!!!!!!");
+                }
+            }
             return result;
+        }
+
+        private int countEmptySquares()
+        {
+            int nbempty = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (boardState[i, j] == 0)
+                    {
+                        nbempty++;
+                    }
+                }
+            }
+            return nbempty;
         }
 
         public int GetWhiteScore()
