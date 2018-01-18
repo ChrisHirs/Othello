@@ -112,7 +112,7 @@ namespace Othello
             {
                 localwhiteTurn = false;
             }
-            if (depth > 0)
+            if (depth > 0 && !isFinal(board, localwhiteTurn))
             {
                 op = Tuple.Create(-1, -1); ;
                 if (!globalIsWhite)
@@ -160,9 +160,9 @@ namespace Othello
                 op = Tuple.Create(-1,-1);
             }
         }
-        public bool isFinal(int[,] board)
+        public bool isFinal(int[,] board, bool isWhite)
         {
-            if (countPlayableSquares(board, true) == 0 && countPlayableSquares(board, false) == 0)
+            if (countPlayableSquares(board, isWhite) == 0)
             {
                 return true;
             }
@@ -176,19 +176,7 @@ namespace Othello
             {
                 notEndOfGame = -1;
             }
-<<<<<<< HEAD
-=======
-            int[,] ponderTab = { 
-                { 5, 1, 1, 2, 2, 1, 1, 5 },
-                { 1, 1, 2, 2, 2, 2, 1, 1 },
-                { 1, 2, 1, 2, 2, 1, 2, 1 },
-                { 2, 2, 2, 1, 1, 2, 2, 2 },
-                { 2, 2, 2, 1, 1, 2, 2, 2 },
-                { 1, 2, 1, 2, 2, 1, 2, 1 },
-                { 1, 1, 2, 2, 2, 2, 1, 1 },
-                { 5, 1, 1, 2, 2, 1, 1, 5 },
-            };
->>>>>>> 4f9fcca74daf26041e9482bacb5fba2afb88a93d
+
             int opponentMark = 0;
             int playerMark = 1;
             if (globalIsWhite)
