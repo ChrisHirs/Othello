@@ -113,7 +113,7 @@ namespace Othello
             if (depth > 0)
             {
                 op = Tuple.Create(-1, -1); ;
-                val = minOrMax * -Int32.MaxValue - 1;
+                val = minOrMax * (Int32.MinValue + 1);
                 for (int i = 0; i < 8; i++)
                 {
                     for (int j = 0; j < 8; j++)
