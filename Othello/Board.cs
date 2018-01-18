@@ -90,16 +90,18 @@ namespace Othello
             Debug.WriteLine("GET NEXT MOVE");
             int opponentMark = 0;
             int playerMark = 1;
+            int minOrMax = 1;
             if (whiteTurn)
             {
                 opponentMark = 1;
                 playerMark = 0;
+                minOrMax = -1;
             }
 
             int val = EvalBoard(boardState, whiteTurn, whiteTurn);
             int res;
             Tuple<int, int> op;
-            alphabeta(boardState, level, playerMark, val, playerMark, opponentMark, whiteTurn, out res, out op);
+            alphabeta(boardState, level, minOrMax, val, playerMark, opponentMark, whiteTurn, out res, out op);
             Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + ">");
             return op;
         }
@@ -113,11 +115,20 @@ namespace Othello
             if (depth > 0)
             {
                 op = Tuple.Create(-1, -1); ;
-                val = minOrMax * (Int32.MinValue + 1);
+                if (!globalIsWhite)
+                {
+                    val = minOrMax * -Int32.MaxValue - 1;
+                }
+                else
+                {
+                    val = minOrMax * (Int32.MinValue + 1);
+                }
+                //Debug.WriteLine("minOrMax: " + minOrMax + ", val: " + val);
                 for (int i = 0; i < 8; i++)
                 {
                     for (int j = 0; j < 8; j++)
                     {
+                        //Debug.WriteLine("i: " + i + ", j: " + j + ", localWhiteTurn: " + localwhiteTurn + ", isPlayable: " + IsPlayableGeneric(board, i, j, localwhiteTurn));
                         if (IsPlayableGeneric(board, i, j, localwhiteTurn))
                         {
                             int[,] newboard = (int[,])board.Clone();
@@ -127,8 +138,10 @@ namespace Othello
                             Tuple<int, int> dummy;
                             //Debug.Write("i = " + i + ", j = " + j + "\n");
                             alphabeta(newboard, depth - 1, minOrMax * -1, val, localplayerMark, localopponentMark, globalIsWhite, out newVal, out dummy);
+                            //Debug.WriteLine("newVal: " + newVal + ", minMax: " + minOrMax + ", val: " + val);
                             if (newVal * minOrMax > val * minOrMax)
                             {
+                                //Debug.WriteLine("Tuple different de -1, -1");
                                 val = newVal;
                                 op = Tuple.Create(i,j);
                                 if(val * minOrMax > parentValue * minOrMax)
