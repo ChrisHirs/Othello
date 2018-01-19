@@ -247,7 +247,7 @@ namespace Othello
                             if (board[(i / 4) * 7, (j / 4) * 7] == -1)
                             {
                                 //Debug.WriteLine("i/7 : " + (i / 4) * 7 + "j/7 : " + (j / 4) * 7);
-                                result -= 12 * squareMark;
+                                result -= 100 * squareMark;
                             }
                             else if (board[i / 7, j / 7] == playerMark)
                             {
@@ -282,20 +282,16 @@ namespace Othello
             {
                 result -= GetBlackScore() * fact * notEndOfGame;
             }
-            //Debug.WriteLine("and result - score is : " + result);
-            // parité
-            if ((localIsWhite && countEmptySquares() % 2 == 0) || (!localIsWhite && countEmptySquares() % 2 == 1))
+            //Debug.WriteLine("and result - score is : " + result);*/
+            //Parity
+            /*if ((localIsWhite && countEmptySquares() % 2 == 0) || (!localIsWhite && countEmptySquares() % 2 == 1))
             {
-                Debug.Write("!!!!!!!");
                 if (countPlayableSquares(board, !localIsWhite) == 0)
                 {
                     result += 200;
-                    Debug.Write("+ 200 !!!!!!!");
                 }
-            }
-            result *= 3;
-            //Mobility
-            if (localIsWhite == globalIsWhite)
+            }*/
+            /*if (localIsWhite == globalIsWhite)
             {
                 result -= countPlayableSquares(board, localIsWhite);
             }
@@ -303,8 +299,18 @@ namespace Othello
             {
                 result += countPlayableSquares(board, localIsWhite);
             }*/
+            //Mobility
+            int factor = 8;
+            result += (countPlayableSquares(board, globalIsWhite) - countPlayableSquares(board, !globalIsWhite)) * factor;
             Debug.WriteLine("Eval: " + result);
-            return result;
+            if (globalIsWhite)
+            {
+                return -result;
+            }
+            else
+            {
+                return result;
+            }
         }
 
         private int countEmptySquares()
