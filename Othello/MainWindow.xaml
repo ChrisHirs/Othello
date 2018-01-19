@@ -6,15 +6,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Othello"
         mc:Ignorable="d"
-        Title="MainWindow" Height="668" Width="862.574" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded" MinWidth="800" MinHeight="600">
-    <Window.Background>
-        <ImageBrush/>
-    </Window.Background>
-    <Window.BorderBrush>
-        <ImageBrush/>
-    </Window.BorderBrush>
+        Icon="pack://siteoforigin:,,,/imgs/macarothello.ico"
+        Title="Macarothello" Width="860" Height="670" SizeChanged="Window_SizeChanged" Loaded="Window_Loaded" MinWidth="800" MinHeight="600">
     <Viewbox>
-        <Grid Height="1425" Width="1934">
+        <Grid Height="1425" Width="1896">
             <Grid.ColumnDefinitions>
                 <ColumnDefinition Width="576*" />
                 <ColumnDefinition Width="193*" />
@@ -22,13 +17,12 @@
             <Grid.RowDefinitions>
                 <RowDefinition Height="1*" />
             </Grid.RowDefinitions>
-            <Canvas Grid.Column="0" Grid.Row="0" Name="canBoard" Margin="10,10,10,0" MouseMove="BoardHover" Loaded="Canvas_Loaded" MouseLeave="canBoard_MouseLeave" MouseUp="canBoard_MouseUp" Width="1415">
+            <Canvas Grid.Column="0" Grid.Row="0" Name="canBoard" Margin="10,10,471,10" MouseMove="BoardHover" Loaded="Canvas_Loaded" MouseLeave="canBoard_MouseLeave" MouseUp="canBoard_MouseUp" Width="1415" Grid.ColumnSpan="2">
                 <Canvas.Effect>
-                    <DropShadowEffect BlurRadius="15" Opacity="0.4" ShadowDepth="0"/>
+                    <DropShadowEffect BlurRadius="50" Opacity="0.7" ShadowDepth="0"/>
                 </Canvas.Effect>
             </Canvas>
-
-            <Grid HorizontalAlignment="Left" Margin="10,10,0,10" Width="465" Grid.Row="0" Grid.Column="1">
+            <Grid HorizontalAlignment="Left" Margin="20,10,0,10" Width="444" Grid.Row="0" Grid.Column="1">
                 <Grid.ColumnDefinitions>
                     <ColumnDefinition Width="1*" />
                     <ColumnDefinition Width="1*" />
@@ -40,19 +34,19 @@
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="2*" />
-
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="2*" />
                     <RowDefinition Height="1*" />
                     <RowDefinition Height="1*" />
                 </Grid.RowDefinitions>
-                <Label x:Name="lblDebug" Content="Macarothello" HorizontalAlignment="Center" Margin="0,10,0,0" VerticalAlignment="Top" Width="455" Height="97" Grid.ColumnSpan="2" Background="#00000000" Foreground="#FFFF4E27" FontFamily="Rage Italic" FontSize="72" HorizontalContentAlignment="Center" VerticalContentAlignment="Center">
+                <Label x:Name="Title" Content="Macarothello" HorizontalAlignment="Center" Margin="10,10,10,-2" VerticalAlignment="Top" Width="424" Height="88" Grid.ColumnSpan="2" Background="#00000000" Foreground="#FFFF4E27" FontFamily="Rage Italic" FontSize="72" HorizontalContentAlignment="Center" VerticalContentAlignment="Center" BorderThickness="0">
                     <Label.Effect>
-                        <DropShadowEffect BlurRadius="20" ShadowDepth="0"/>
+                        <DropShadowEffect ShadowDepth="0" Direction="0" BlurRadius="12"/>
                     </Label.Effect>
                 </Label>
-                <Button x:Name="btnNew" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="445" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="New" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnNew_Click">
+                <Button x:Name="btnNew" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="1" VerticalAlignment="Top" Width="424" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="New" FontFamily="Rage Italic" FontSize="72" BorderBrush="#FF010000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnNew_Click" Background="White" Focusable="False"/>
+                <Button x:Name="btnOpen" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="424" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Open" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnOpen_Click">
                     <Button.Background>
                         <RadialGradientBrush>
                             <GradientStop Color="#FF5F5F5F" Offset="0.003"/>
@@ -60,7 +54,7 @@
                         </RadialGradientBrush>
                     </Button.Background>
                 </Button>
-                <Button x:Name="btnOpen" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="2" VerticalAlignment="Top" Width="445" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Open" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnOpen_Click">
+                <Button x:Name="btnSave" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="3" VerticalAlignment="Top" Width="424" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Save" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnSave_Click">
                     <Button.Background>
                         <RadialGradientBrush>
                             <GradientStop Color="#FF5F5F5F" Offset="0.003"/>
@@ -68,47 +62,39 @@
                         </RadialGradientBrush>
                     </Button.Background>
                 </Button>
-                <Button x:Name="btnSave" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="3" VerticalAlignment="Top" Width="445" Height="88" Grid.ColumnSpan="2" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="Save" FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Click="btnSave_Click">
-                    <Button.Background>
-                        <RadialGradientBrush>
-                            <GradientStop Color="#FF5F5F5F" Offset="0.003"/>
-                            <GradientStop Color="#19000000" Offset="1"/>
-                        </RadialGradientBrush>
-                    </Button.Background>
-                </Button>
-                <Button x:Name="btnSkinPlayerA" Content="" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="8" Width="212" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Height="206" VerticalAlignment="Top" Click="ChangeSkin"/>
-                <Button x:Name="btnSkinPlayerB" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,0,0,0" Grid.Row="8" VerticalAlignment="Top" Width="213" Height="206" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Click="ChangeSkin"/>
-                <Label Content="{Binding ElementName=MyOthello, Path=Player1Time}" HorizontalAlignment="Center" Margin="-5,10,10,0" Grid.Row="9" VerticalAlignment="Top" Height="88" Width="227" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="#FF5DFF00">
+                <Button x:Name="btnSkinPlayerA" Content="" HorizontalAlignment="Left" Margin="10,10.333,0,0" Grid.Row="8" Width="202" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Height="196" VerticalAlignment="Top" Click="ChangeSkin" Focusable="False" />
+                <Button x:Name="btnSkinPlayerB" Content="" Grid.Column="1" HorizontalAlignment="Left" Margin="10,10.333,0,0" Grid.Row="8" VerticalAlignment="Top" Width="202" Height="196" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Click="ChangeSkin"/>
+                <Label Content="{Binding ElementName=MyOthello, Path=Player1Time}" HorizontalAlignment="Center" Margin="10,10.333,10,0" Grid.Row="9" VerticalAlignment="Top" Height="88" Width="202" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="#FF5DFF00">
                     <Label.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
                     </Label.Effect>
                 </Label>
-                <Label Content="{Binding ElementName=MyOthello, Path=Player2Time}" Grid.Column="1" HorizontalAlignment="Center" Margin="0,10,0,0" Grid.Row="9" VerticalAlignment="Top" Height="88" Width="233" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="#FF5DFF00">
+                <Label Content="{Binding ElementName=MyOthello, Path=Player2Time}" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10.333,10,0" Grid.Row="9" VerticalAlignment="Top" Height="88" Width="202" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="#FF5DFF00">
                     <Label.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
                     </Label.Effect>
                 </Label>
-                <Label Content="{Binding ElementName=MyOthello, Path=WhiteScore}" HorizontalAlignment="Center" Margin="10,10,10,0" Grid.Row="10" VerticalAlignment="Top" Height="89" Width="212" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="Red">
+                <Label Content="{Binding ElementName=MyOthello, Path=WhiteScore}" HorizontalAlignment="Center" Margin="10,10.333,10,0" Grid.Row="10" VerticalAlignment="Top" Height="89" Width="202" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="Red">
                     <Label.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
                     </Label.Effect>
                 </Label>
-                <Label Content="{Binding ElementName=MyOthello, Path=BlackScore}" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,10,0" Grid.Row="10" VerticalAlignment="Top" Height="89" Width="213" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="Red">
+                <Label Content="{Binding ElementName=MyOthello, Path=BlackScore}" Grid.Column="1" HorizontalAlignment="Center" Margin="10,10.333,10,0" Grid.Row="10" VerticalAlignment="Top" Height="89" Width="202" FontSize="72" FontFamily="Agency FB" VerticalContentAlignment="Center" Foreground="Red">
                     <Label.Effect>
                         <DropShadowEffect BlurRadius="10" ShadowDepth="0"/>
                     </Label.Effect>
                 </Label>
-                <Label Content="Player 1" HorizontalAlignment="Center" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="212" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
+                <Label Content="Player 1" HorizontalAlignment="Center" Margin="13,10,10,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="205" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
                     <Label.Effect>
                         <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="2" Direction="300"/>
                     </Label.Effect>
                 </Label>
-                <Label x:Name="lblPlayer2" Content="I.A." Grid.Column="1" HorizontalAlignment="Center" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="213" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
+                <Label x:Name="lblPlayer2" Content="I.A." Grid.Column="1" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="7" VerticalAlignment="Top" Height="88" Width="202" FontSize="48" VerticalContentAlignment="Center" FontFamily="Rage Italic" Background="#00000000" Foreground="#FFFF4E27">
                     <Label.Effect>
                         <DropShadowEffect ShadowDepth="0" BlurRadius="15" Opacity="2" Direction="300"/>
                     </Label.Effect>
                 </Label>
-                <Button x:Name="btnIA" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="6" VerticalAlignment="Top" Width="213" Height="88" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="I.A." FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Grid.Column="1" Click="btnIA_Click">
+                <Button x:Name="btnIA" HorizontalAlignment="Left" Margin="10,10,0,0" Grid.Row="6" VerticalAlignment="Top" Width="202" Height="88" Opacity="0.7" MouseEnter="btnMenuEnter" MouseLeave="btnMenuLeave" Content="I.A." FontFamily="Rage Italic" FontSize="72" BorderBrush="#00000000" Foreground="#FFFF4E27" BorderThickness="0" Grid.Column="1" Click="btnIA_Click">
                     <Button.Background>
                         <RadialGradientBrush>
                             <GradientStop Color="#FF5F5F5F" Offset="0.003"/>

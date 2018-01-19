@@ -57,7 +57,7 @@ namespace Othello
 
         public string GetName()
         {
-            return "Christophe Hischi, Deni Gahlinger";
+            return "G7: Deni Gahlinger, Christophe Hischi";
         }
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
@@ -174,7 +174,7 @@ namespace Othello
             int notEndOfGame = 1;
             if (emptySquares < 20)
             {
-                notEndOfGame = -1;
+                //notEndOfGame = -1;
             }
 
             int opponentMark = 0;
@@ -191,9 +191,11 @@ namespace Othello
                 {
                     if (board[i, j] != -1)
                     {
+                        int squareMark;
                         if (board[i,j] == playerMark)
                         {
-                            if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
+                            squareMark = 1;
+                            /*if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
                             {
                                 result += 20;
                             }
@@ -215,11 +217,13 @@ namespace Othello
                             } else
                             {
                                 result += evalTab[i, j] * notEndOfGame;
-                            }
+                            }*/
                             
-                        } else if (board[i, j] == opponentMark)
+                        }
+                        else
                         {
-                            if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
+                            squareMark = -1;
+                            /*if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
                             {
                                 result -= 8;
                             }
@@ -230,13 +234,14 @@ namespace Othello
                             else
                             {
                                 result -= evalTab[i, j] * notEndOfGame;
-                            }
+                            }*/
                         }
+                        result -= evalTab[i, j] * squareMark * notEndOfGame;
                     }
                 }
             }
             //Debug.WriteLine("and result is : " + result);
-            int fact = 10;
+            /*int fact = 10;
             if (!localIsWhite)
             {
                 result -= GetWhiteScore() * fact * notEndOfGame;
@@ -264,7 +269,7 @@ namespace Othello
             else
             {
                 result += countPlayableSquares(board, localIsWhite);
-            }
+            }*/
             return result;
         }
 
