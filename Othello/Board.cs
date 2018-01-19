@@ -5,7 +5,34 @@ namespace Othello
 {
     public class Board : IPlayable.IPlayable
     {
-        int[,] evalTab;
+        int[,] evalTabEndGame = {
+                { 9, 0, 3, 3, 3, 3, 0, 9 },
+                { 0, 0, 1, 1, 1, 1, 0, 0 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 0, 0, 1, 1, 1, 1, 0, 0 },
+                { 9, 0, 3, 3, 3, 3, 0, 9 },
+            };
+        public int[,] EvalTabEndGame
+        {
+            get; set;
+        }
+        int[,] evalTabBegGame = {
+                { 16, 0, 1, 1, 1, 1, 0, 16 },
+                { 0, 0, 2, 2, 2, 2, 0, 0 },
+                { 1, 2, 4, 4, 4, 4, 2, 1 },
+                { 1, 2, 4, 8, 8, 4, 2, 1 },
+                { 1, 2, 4, 8, 8, 4, 2, 1 },
+                { 1, 2, 4, 4, 4, 4, 2, 1 },
+                { 0, 0, 2, 2, 2, 2, 0, 0 },
+                { 16, 0, 1, 1, 1, 1, 0, 16 },
+            };
+        public int[,] EvalTabBegGame
+        {
+            get; set;
+        }
         bool ended = false;
         public bool Ended
         {
@@ -19,13 +46,12 @@ namespace Othello
         public Board()
         {
             boardState = new int[8,8];
-            evalTab = new int[8,8];
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     boardState[i, j] = -1;
-                    evalTab[i, j] = 0;
+                    evalTabBegGame[i, j] = evalTabBegGame[i, j] - 3;
                 }
             }
             boardState[3, 3] = 0;
@@ -62,32 +88,7 @@ namespace Othello
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
-            for(int i = 0; i<8; i++)
-            {
-                Debug.Write("-------------------------\n");
-                for(int j = 0; j<8; j++)
-                {
-                    evalTab[i,j] = Math.Max(Math.Abs((i*2)-7), Math.Abs((j*2)-7)) - 4;
-                    if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
-                    {
-                        evalTab[i, j] = 8;
-                    } else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5))){
-                        evalTab[i, j] = 0;
-                    }
-                    if (evalTab[i, j] < 0)
-                    {
-                        Debug.Write("|" + evalTab[i,j]);
-                    }
-                    else
-                    {
-                        Debug.Write("| " + evalTab[i, j]);
-                    }
-                }
-                Debug.Write("|\n");
-            }
-            Debug.Write("-------------------------");
-
-            Debug.WriteLine("GET NEXT MOVE");
+            //Debug.WriteLine("GET NEXT MOVE");
             int opponentMark = 0;
             int playerMark = 1;
             int minOrMax = 1;
@@ -102,7 +103,8 @@ namespace Othello
             int res;
             Tuple<int, int> op;
             alphabeta(boardState, level, minOrMax, val, playerMark, opponentMark, whiteTurn, out res, out op);
-            Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + ">");
+            //Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + ">");
+            Debug.WriteLine("Best Eval: " + res);
             return op;
         }
         public void alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int localplayerMark, int localopponentMark, bool globalIsWhite, out int val, out Tuple<int, int> op)
@@ -136,7 +138,7 @@ namespace Othello
                             changeSquaresAfterPlay(ref newboard, i, j, localwhiteTurn);
                             int newVal;
                             Tuple<int, int> dummy;
-                            //Debug.Write("i = " + i + ", j = " + j + "\n");
+                            Debug.Write("i = " + i + ", j = " + j + "\n");
                             alphabeta(newboard, depth - 1, minOrMax * -1, val, localplayerMark, localopponentMark, globalIsWhite, out newVal, out dummy);
                             //Debug.WriteLine("newVal: " + newVal + ", minMax: " + minOrMax + ", val: " + val);
                             if (newVal * minOrMax > val * minOrMax)
@@ -171,10 +173,10 @@ namespace Othello
         public int EvalBoard(int[,] board, bool globalIsWhite, bool localIsWhite)
         {
             int emptySquares = countEmptySquares();
-            int notEndOfGame = 1;
-            if (emptySquares < 20)
+            bool endOfGame = false;
+            if (emptySquares < 25)
             {
-                //notEndOfGame = -1;
+                endOfGame = true;
             }
 
             int opponentMark = 0;
@@ -236,7 +238,38 @@ namespace Othello
                                 result -= evalTab[i, j] * notEndOfGame;
                             }*/
                         }
-                        result -= evalTab[i, j] * squareMark * notEndOfGame;
+                        if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
+                        {
+                            result += 80;
+                        }
+                        else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5)))
+                        {
+                            if (board[(i / 4) * 7, (j / 4) * 7] == -1)
+                            {
+                                //Debug.WriteLine("i/7 : " + (i / 4) * 7 + "j/7 : " + (j / 4) * 7);
+                                result -= 12 * squareMark;
+                            }
+                            else if (board[i / 7, j / 7] == playerMark)
+                            {
+                                result += 5 * squareMark;
+                            }
+                            else
+                            {
+                                result += 3 * squareMark;
+                            }
+
+                        }
+                        else
+                        {
+                            if (!endOfGame)
+                            {
+                                result += evalTabBegGame[i, j] * squareMark;
+                            }
+                            else
+                            {
+                                result += evalTabEndGame[i, j] * squareMark;
+                            }
+                        }
                     }
                 }
             }
@@ -270,6 +303,7 @@ namespace Othello
             {
                 result += countPlayableSquares(board, localIsWhite);
             }*/
+            Debug.WriteLine("Eval: " + result);
             return result;
         }
 
@@ -280,7 +314,7 @@ namespace Othello
             {
                 for (int j = 0; j < 8; j++)
                 {
-                    if (boardState[i, j] == 0)
+                    if (boardState[i, j] == -1)
                     {
                         nbempty++;
                     }

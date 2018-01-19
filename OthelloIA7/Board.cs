@@ -5,7 +5,20 @@ namespace Othello
 {
     public class Board : IPlayable.IPlayable
     {
-        int[,] evalTab;
+        int[,] evalTab = {
+                { 9, 0, 3, 3, 3, 3, 0, 9 },
+                { 0, 0, 1, 1, 1, 1, 0, 0 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 3, 2, 1, 1, 1, 1, 2, 3 },
+                { 0, 0, 1, 1, 1, 1, 0, 0 },
+                { 9, 0, 3, 3, 3, 3, 0, 9 },
+            };
+        public int[,] EvalTab
+        {
+            get; set;
+        }
         bool ended = false;
         public bool Ended
         {
@@ -19,13 +32,11 @@ namespace Othello
         public Board()
         {
             boardState = new int[8,8];
-            evalTab = new int[8,8];
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     boardState[i, j] = -1;
-                    evalTab[i, j] = 0;
                 }
             }
             boardState[3, 3] = 0;
@@ -62,31 +73,6 @@ namespace Othello
 
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
-            for(int i = 0; i<8; i++)
-            {
-                Debug.Write("-------------------------\n");
-                for(int j = 0; j<8; j++)
-                {
-                    evalTab[i,j] = Math.Max(Math.Abs((i*2)-7), Math.Abs((j*2)-7)) - 4;
-                    if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
-                    {
-                        evalTab[i, j] = 8;
-                    } else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5))){
-                        evalTab[i, j] = 0;
-                    }
-                    if (evalTab[i, j] < 0)
-                    {
-                        Debug.Write("|" + evalTab[i,j]);
-                    }
-                    else
-                    {
-                        Debug.Write("| " + evalTab[i, j]);
-                    }
-                }
-                Debug.Write("|\n");
-            }
-            Debug.Write("-------------------------");
-
             Debug.WriteLine("GET NEXT MOVE");
             int opponentMark = 0;
             int playerMark = 1;
@@ -236,7 +222,7 @@ namespace Othello
                                 result -= evalTab[i, j] * notEndOfGame;
                             }*/
                         }
-                        result -= evalTab[i, j] * squareMark * notEndOfGame;
+                        result += evalTab[i, j] * squareMark * notEndOfGame;
                     }
                 }
             }
