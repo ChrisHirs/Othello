@@ -4,7 +4,7 @@
              xmlns:local="clr-namespace:Othello"
              StartupUri="MainWindow.xaml">
     <Application.Resources>
-        <!-- Ressources d'images -->
+        <!-- Image resources -->
         <BitmapImage x:Key="im_almond" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_almond.png"/>
         <BitmapImage x:Key="im_banana" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_banana.png"/>
         <BitmapImage x:Key="im_blueberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_blueberry.png"/>
@@ -23,8 +23,7 @@
         <BitmapImage x:Key="im_rose" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_rose.png"/>
         <BitmapImage x:Key="im_strawberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_strawberry.png"/>
         <BitmapImage x:Key="im_vanilla" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_vanilla.png"/>
-        <!-- Thème pour les boutons -->
-        <!-- Couleurs -->
+        <!-- Colors -->
         <Color x:Key="ControlNormalColor">#EEEEEE</Color>
         <Color x:Key="ControlMouseOverColor">#FAFAD2</Color>
         <Color x:Key="DisabledControlColor">#DDDDDD</Color>

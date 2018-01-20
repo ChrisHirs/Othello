@@ -1,32 +1,40 @@
-﻿using Microsoft.Win32;
-using System;
-using System.Collections;
+﻿/* Game saving/loading file handler.
+ * 
+ * Deni Gahlinger, Christophe Hirschi
+ * 
+ * January 2018
+ */
+
+using Microsoft.Win32;
 using System.IO;
-using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters.Binary;
 
 namespace Othello
 {
+    /// <summary>
+    /// Game saving/loading file handler
+    /// </summary>
     internal class FileHandler
     {
-        public void Write(MainWindow win)
+        /// <summary>
+        /// Writes game file
+        /// </summary>
+        /// <param name="window">mainwindow</param>
+        public void Write(MainWindow window)
         {
-            SaveFileDialog saveFileDialog1 = new SaveFileDialog();
-            //saveFileDialog1.Filter = "JPeg Image|*.jpg|Bitmap Image|*.bmp|Gif Image|*.gif";
-            saveFileDialog1.Title = "Save a game File";
+            SaveFileDialog saveFileDialog1 = new SaveFileDialog { Title = "Save a game File" };
             saveFileDialog1.ShowDialog();
-            StreamWriter outputFile = new StreamWriter(saveFileDialog1.FileName + ".moth", true);
-            outputFile.Write(win.IsIA);
-            outputFile.Write(win.board);
+            StreamWriter streamWriter = new StreamWriter(saveFileDialog1.FileName + ".moth", true);
 
         }
-        public void Read(MainWindow win)
+        /// <summary>
+        /// Loads game file
+        /// </summary>
+        /// <param name="window">mainwindow</param>
+        public void Read(MainWindow window)
         {
-            OpenFileDialog openFileDialog1 = new OpenFileDialog();
-            openFileDialog1.Title = "Open a game File";
+            OpenFileDialog openFileDialog1 = new OpenFileDialog { Title = "Open a game File" };
             openFileDialog1.ShowDialog();
-            MainWindow winTmp = null;
-            StreamReader sr = new StreamReader(openFileDialog1.FileName, true);
+            StreamReader streamReader = new StreamReader(openFileDialog1.FileName, true);
         }
     }
 

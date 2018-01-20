@@ -284,13 +284,13 @@ namespace Othello
             }
             //Debug.WriteLine("and result - score is : " + result);*/
             //Parity
-            /*if ((localIsWhite && countEmptySquares() % 2 == 0) || (!localIsWhite && countEmptySquares() % 2 == 1))
+            if ((localIsWhite && countEmptySquares() % 2 == 0) || (!localIsWhite && countEmptySquares() % 2 == 1))
             {
                 if (countPlayableSquares(board, !localIsWhite) == 0)
                 {
                     result += 200;
                 }
-            }*/
+            }
             /*if (localIsWhite == globalIsWhite)
             {
                 result -= countPlayableSquares(board, localIsWhite);

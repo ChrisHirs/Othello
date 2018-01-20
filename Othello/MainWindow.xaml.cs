@@ -1,6 +1,12 @@
-﻿using System;
+﻿/* MainWindow.xaml interaction logic.
+ * 
+ * Deni Gahlinger, Christophe Hirschi
+ * 
+ * January 2018
+ */
+
+using System;
 using System.ComponentModel;
-using System.Diagnostics;
 using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
@@ -13,37 +19,37 @@ using System.Windows.Threading;
 namespace Othello
 {
     /// <summary>
-    /// Logique d'interaction pour MainWindow.xaml
+    /// MainWindow.xaml interaction logic
     /// </summary>
     public partial class MainWindow : Window, INotifyPropertyChanged
     {
-        FileHandler f = new FileHandler();
+        //Scores
+        int whiteScore;
+        int blackScore;
+        //Game booleans
         bool isIA;
-        public bool IsIA
-        {
-            get; set;
-        }
         bool isSkinForPlayer1;
         bool isPlaying;
         bool wasPlaying;
-        int whiteScore;
-        int blackScore;
-        TimeSpan player1TimeS;
-        TimeSpan player2TimeS;
+        bool turnToWhite = true;
+        //Player times
         string player1Time;
         string player2Time;
+        TimeSpan player1TimeS;
+        TimeSpan player2TimeS;
         DateTime turnStartTime;
         DispatcherTimer mainTimer;
-        bool turnToWhite = true;
+        //Miscellaneous
         Rectangle rectHover = new Rectangle();
-        public Board board = new Board();
-        int skinIdPlayer1;
-        int skinIdPlayer2;
-        ImageBrush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        FileHandler fileHandler = new FileHandler();
+        //Base skins (Banana for player 1 and Blueberry for IA/player 2)
         ImageBrush skinPlayer1 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_banana.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
-
+        ImageBrush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        //Board
+        public Board board = new Board();
+        //Databinding
         public event PropertyChangedEventHandler PropertyChanged;
-
+        //Accessors
         public int WhiteScore
         {
             get { return whiteScore; }
@@ -64,32 +70,29 @@ namespace Othello
             get { return player2Time; }
             set { player2Time = value; RaisePropertyChanged("Player2Time"); }
         }
-
-        public BitmapSource BitmapSource { get; }
-
         void RaisePropertyChanged(string propertyName)
         {
-            if(PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
+            PropertyChanged?.Invoke(this, new PropertyChangedEventArgs(propertyName));
         }
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public MainWindow()
         {
-            skinIdPlayer1 = 0;
-            skinIdPlayer2 = 0;
+            //Intializing
+            InitializeComponent();
+            //Game booleans
             isIA = true;
             isSkinForPlayer1 = true;
             isPlaying = false;
-            InitializeComponent();
-            /*ImageBrush bgImage = new ImageBrush();
-            bgImage.ImageSource = new BitmapImage(new Uri(@"imgs\BackgroundOthello.jpg", UriKind.Relative));
-            BitmapSource = Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.BackgroundOthello.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions());*/
+            //Background
             this.Background = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.BackgroundOthello.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+            //Player times
             player1TimeS = new TimeSpan();
             player2TimeS = new TimeSpan();
             Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
             Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
+            //Player skins applied to menu buttons
             btnSkinPlayerA.Background = skinPlayer1;
             Image imagePlayer1 = new Image { Source = skinPlayer1.ImageSource };
             btnSkinPlayerA.Content = imagePlayer1;
@@ -97,27 +100,33 @@ namespace Othello
             Image imagePlayer2 = new Image { Source = skinPlayer2.ImageSource };
             btnSkinPlayerB.Content = imagePlayer2;
         }
-
+        /// <summary>
+        /// Shows where a player can possibly play by anchoring his counter where he can actually play
+        /// otherwise shows his counter nearly visible when mouse is on board
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">mouse event</param>
         private void BoardHover(object sender, MouseEventArgs e)
         {
+            //If game has started
             if (isPlaying)
             {
                 rectHover.Name = "hoverRect";
-
-                double h = canBoard.ActualHeight;
-                double dH = h / 8.0;
-                double w = canBoard.ActualWidth;
-                double dW = w / 8.0;
-
-                double eX = e.GetPosition(canBoard).X;
-                double eY = e.GetPosition(canBoard).Y;
-
+                //Getting board canvas dimensions
+                double canvasHeight = canBoard.ActualHeight;
+                double dH = canvasHeight / 8.0;
+                double canvasWidth = canBoard.ActualWidth;
+                double dW = canvasWidth / 8.0;
+                //Getting mouse positions
+                double mouseX = e.GetPosition(canBoard).X;
+                double mouseY = e.GetPosition(canBoard).Y;
+                //Setting counter dimensions
                 rectHover.Width = dW;
                 rectHover.Height = dH;
-
-                int squareIdI = (int)(eX / dW);
-                int squareIdJ = (int)(eY / dH);
-                
+                //Setting counter positions
+                int squareIdI = (int)(mouseX / dW);
+                int squareIdJ = (int)(mouseY / dH);
+                //Setting counter skin based on player turn
                 if (turnToWhite)
                 {
                     rectHover.Fill = skinPlayer1.Clone();
@@ -126,25 +135,24 @@ namespace Othello
                 {
                     rectHover.Fill = skinPlayer2.Clone();
                 }
-
+                //Anchoring counter if possible play
                 if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
                 {
-
                     Canvas.SetTop(rectHover, (squareIdJ * dH));
                     Canvas.SetLeft(rectHover, (squareIdI * dW));
-                    rectHover.Fill.Opacity = 0.55;
+                    rectHover.Fill.Opacity = 0.6;
                 }
                 else
                 {
-
-                    Canvas.SetTop(rectHover, eY - dH / 2);
-                    Canvas.SetLeft(rectHover, eX - dW / 2);
+                    Canvas.SetTop(rectHover, mouseY - dH / 2);
+                    Canvas.SetLeft(rectHover, mouseX - dW / 2);
                     rectHover.Fill.Opacity = 0.2;
                 }
                 rectHover.InvalidateVisual();
+                //Counter only if on board
                 if (canBoard.Children.Contains(rectHover))
                 {
-                    if (eX > w || eX > h || eX < 0 || eY < 0)
+                    if (mouseX > canvasWidth || mouseX > canvasHeight || mouseX < 0 || mouseY < 0)
                     {
                         canBoard.Children.Remove(rectHover);
                     }
@@ -155,80 +163,90 @@ namespace Othello
                 }
             }
         }
-
+        /// <summary>
+        /// Displays board when XAML canvas has loaded
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
         private void Canvas_Loaded(object sender, RoutedEventArgs e)
         {
-            printBoard();
+            PrintBoard();
         }
-
-        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        /// <summary>
+        /// Creates and displays board
+        /// </summary>
+        private void PrintBoard()
         {
-        }
-        private void printBoard()
-        {
-
             canBoard.Children.Clear();
-
-            int h = (int)canBoard.ActualHeight;
-            int w = (int)canBoard.ActualWidth;
-            
-            Rectangle bg = new Rectangle();
-
-            bg.Height = h;
-            bg.Width = w;
-
+            //Getting board canvas dimensions
+            int canvasHeight = (int)canBoard.ActualHeight;
+            int canvasWidth = (int)canBoard.ActualWidth;
+            //Background
+            Rectangle bg = new Rectangle
+            {
+                Height = canvasHeight,
+                Width = canvasWidth
+            };
+            //Modifying canvas based on background
             Canvas.SetTop(bg, 0);
             Canvas.SetLeft(bg, 0);
             bg.Fill = Brushes.White;
-
             canBoard.Children.Add(bg);
-
+            //Brush
             Brush myBrush = new SolidColorBrush(Color.FromArgb(100,200,10,10));
-            
-
+            //Painting board lines
             for (int i = 0; i < 4; i++)
             {
-                Line myLine = new Line();
-                myLine.Stroke = myBrush;
-                myLine.X1 = 0;
-                myLine.X2 = w;
-                myLine.Y1 = (h / 4.0 * i) + (w/16.0);
-                myLine.Y2 = (h / 4.0 * i) + (h/16.0);
-                myLine.StrokeThickness = (int)(h/8.0);
+                Line myLine = new Line
+                {
+                    Stroke = myBrush,
+                    X1 = 0,
+                    X2 = canvasWidth,
+                    Y1 = (canvasHeight / 4.0 * i) + (canvasWidth / 16.0),
+                    Y2 = (canvasHeight / 4.0 * i) + (canvasHeight / 16.0),
+                    StrokeThickness = (int)(canvasHeight / 8.0)
+                };
                 canBoard.Children.Add(myLine);
-                myLine = new Line();
-                myLine.Stroke = myBrush;
-                myLine.Y1 = 0;
-                myLine.Y2 = h;
-                myLine.X1 = (w / 4.0 * i) + (w/16.0);
-                myLine.X2 = (h / 4.0 * i) + (h/16.0);
-                myLine.StrokeThickness = (int)(w/8.0);
+                myLine = new Line
+                {
+                    Stroke = myBrush,
+                    Y1 = 0,
+                    Y2 = canvasHeight,
+                    X1 = (canvasWidth / 4.0 * i) + (canvasWidth / 16.0),
+                    X2 = (canvasHeight / 4.0 * i) + (canvasHeight / 16.0),
+                    StrokeThickness = (int)(canvasWidth / 8.0)
+                };
                 canBoard.Children.Add(myLine);
             }
-            Rectangle textileFilter = new Rectangle();
-
-            textileFilter.Height = h;
-            textileFilter.Width = w;
-
+            //Texture rectangle
+            Rectangle textileFilter = new Rectangle
+            {
+                Height = canvasHeight,
+                Width = canvasWidth
+            };
+            //Modifying canvas based on rectangle
             Canvas.SetTop(textileFilter, 0);
             Canvas.SetLeft(textileFilter, 0);
-            ImageBrush textileBrush = new ImageBrush();
-            textileBrush.ImageSource = new BitmapImage(new Uri(@"imgs\texttexture.png", UriKind.Relative));
+            //Filling rectangle with texture image
+            ImageBrush textileBrush = new ImageBrush { ImageSource = new BitmapImage(new Uri(@"imgs\texttexture.png", UriKind.Relative)) };
             textileFilter.Fill = textileBrush;
-
+            //Painting board squares
             canBoard.Children.Add(textileFilter);
+            //Painting existing counters on board
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     if(board.GetBoard()[i,j] >= 0)
                     {
-                        Rectangle square = new Rectangle();
-
-                        square.Height = h/8.0;
-                        square.Width = w/8.0;
-                        Canvas.SetTop(square, j * h / 8.0);
-                        Canvas.SetLeft(square, i * w / 8.0);
+                        Rectangle square = new Rectangle
+                        {
+                            Height = canvasHeight / 8.0,
+                            Width = canvasWidth / 8.0
+                        };
+                        Canvas.SetTop(square, j * canvasHeight / 8.0);
+                        Canvas.SetLeft(square, i * canvasWidth / 8.0);
+                        //Setting counter image based on player
                         if (board.GetBoard()[i, j] == 0)
                         {
                             square.Fill = skinPlayer1.Clone();
@@ -241,144 +259,194 @@ namespace Othello
                 }
             }
         }
-
+        /// <summary>
+        /// Called when window has loaded. Displays board
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
         private void Window_Loaded(object sender, RoutedEventArgs e)
         {
             rectHover.Fill = Brushes.Black;
             canBoard.Children.Add(rectHover);
-            printBoard();
+            PrintBoard();
         }
-
-        private void canBoard_MouseLeave(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Called when mouse leaves canvas board. Removes counter from mouse
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">mouse event</param>
+        private void CanBoard_MouseLeave(object sender, MouseEventArgs e)
         {
             if (canBoard.Children.Contains(rectHover))
             {
                 canBoard.Children.Remove(rectHover);
             }
         }
-
-        private void canBoard_MouseUp(object sender, MouseButtonEventArgs e)
+        /// <summary>
+        /// Called when mouse click is released on canvas board. Makes moves for player and IA
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">mouse event</param>
+        private void CanBoard_MouseUp(object sender, MouseButtonEventArgs e)
         {
+            //If game as started and it is player turn
             if (isPlaying && (!isIA || turnToWhite))
             {
-                double dH = canBoard.ActualHeight / 8.0;
-                double dW = canBoard.ActualWidth / 8.0;
-
+                //Getting canvas board dimensions
+                double canvasHeight = canBoard.ActualHeight / 8.0;
+                double canvasWidth = canBoard.ActualWidth / 8.0;
+                //Getting mouse positions
                 double eX = e.GetPosition(canBoard).X;
                 double eY = e.GetPosition(canBoard).Y;
-
-                int squareIdI = (int)(eX / dW);
-                int squareIdJ = (int)(eY / dH);
-
+                //Setting counter positions
+                int squareIdI = (int)(eX / canvasWidth);
+                int squareIdJ = (int)(eY / canvasHeight);
+                //If move can be played
                 if (board.IsPlayable(squareIdI, squareIdJ, turnToWhite))
                 {
+                    //Move is played
                     bool changePlayer = board.PlayMove(squareIdI, squareIdJ, turnToWhite);
+                    //If game is finished
                     if(board.Ended)
                     {
-                        isPlaying = false;
-                        string winner = "Player 1";
-                        if(board.GetBlackScore() > board.GetWhiteScore())
-                        {
-                            winner = lblPlayer2.Content.ToString();
-                        }
-                        lblWinner.Content = "The winner is : " + winner;
-                        lblWinner.Visibility = Visibility.Visible;
+                        //Displaying a label with the winner
+                        DisplayWinner();
                     }
+                    //Changing players
                     if (changePlayer)
                     {
                         turnToWhite = !turnToWhite;
                     }
                 }
             }
+            //If game as started and it is IA turn
             if (isPlaying && isIA && !turnToWhite)
             {
-                Debug.WriteLine("in IA turn");
-
                 bool changePlayer = false;
                 while (!changePlayer && !board.Ended)
                 {
+                    //IA finds its next move to play
                     Tuple<int, int> IA = board.GetNextMove(board.GetBoard(), 1, turnToWhite);
-                    Debug.WriteLine("in while");
+                    //Move is played
                     changePlayer = board.PlayMove(IA.Item1, IA.Item2, turnToWhite);
+                    //If game is finished
                     if (board.Ended)
                     {
-                        Debug.WriteLine("in if board ended");
-                        isPlaying = false;
-                        lblWinner.Content = "The winner is : Player  1";
-                        if (board.GetBlackScore() > board.GetWhiteScore())
-                        {
-                            lblWinner.Content = "The winner is : " + lblPlayer2.Content;
-                        }
-                        lblWinner.Visibility = Visibility.Visible;
+                        //Displaying a label with the winner
+                        DisplayWinner();
                     }
                 }
+                //Changing players
                 if (changePlayer)
                 {
-                    Debug.WriteLine("changing player");
                     turnToWhite = !turnToWhite;
                 }
             }
-            printBoard();
+            //Updating board
+            PrintBoard();
+            //Updating scores
             this.WhiteScore = board.GetWhiteScore();
             this.BlackScore = board.GetBlackScore();
         }
-
-        private void btnMenuEnter(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Displays a label with the winner
+        /// </summary>
+        private void DisplayWinner()
+        {
+            //Setting end game
+            isPlaying = false;
+            string winner = "Player 1";
+            //If IA/player 2 has more counters, winner is IA/player 2
+            if (board.GetBlackScore() > board.GetWhiteScore())
+            {
+                winner = lblPlayer2.Content.ToString();
+            }
+            lblWinner.Content = "The winner is : " + winner;
+            //Displaying winning label
+            lblWinner.Visibility = Visibility.Visible;
+        }
+        /// <summary>
+        /// Called when mouse touches a button. Changes button opacity
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">mouse event</param>
+        private void BtnMenuEnter(object sender, MouseEventArgs e)
         {
             Button btn = (Button)sender;
             btn.Opacity = 1;
         }
-
-        private void btnMenuLeave(object sender, MouseEventArgs e)
+        /// <summary>
+        /// Called when mouse leaves a button. Changes button opacity
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">mouse event</param>
+        private void BtnMenuLeave(object sender, MouseEventArgs e)
         {
             Button btn = (Button)sender;
             btn.Opacity = 1;
         }
-
-        private void btnNew_Click(object sender, RoutedEventArgs e)
+        /// <summary>
+        /// Updates and displays time during players turns
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">event</param>
+        private void UpdateTimeStrings(object sender, EventArgs e)
         {
-            startGame();
-            isPlaying = true;
-            printBoard();
-        }
-        private void updateTimeStrings(object sender, EventArgs e)
-        {
+            //If game has started
             if (isPlaying)
             {
+                //If is player 2 turn
                 if (!turnToWhite)
                 {
+                    //Updating player 2's time
                     player2TimeS += DateTime.Now - turnStartTime;
                     Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
                 }
+                //If is player 1 turn
                 else
                 {
+                    //updating player 1's time
                     player1TimeS += DateTime.Now - turnStartTime;
                     Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
                 }
+                //Turn started time
                 turnStartTime = DateTime.Now;
             }
         }
-        private void startGame()
+        /// <summary>
+        /// Starts a new game
+        /// </summary>
+        private void StartGame()
         {
+            //Hiding winning label
             lblWinner.Visibility = Visibility.Hidden;
+            //Reseting player times
             player1TimeS = new TimeSpan();
             player2TimeS = new TimeSpan();
             Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
             Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
+            //Starting a new board
             board = new Board();
             turnToWhite = true;
+            //Starting main timer
             mainTimer = new DispatcherTimer();
-            mainTimer.Tick += new EventHandler(updateTimeStrings);
+            mainTimer.Tick += new EventHandler(UpdateTimeStrings);
             mainTimer.Interval = new TimeSpan(0, 0, 0, 0, 10);
             mainTimer.Start();
+            //turn srated time
             turnStartTime = DateTime.Now;
+            //Scores
             whiteScore = 2;
             blackScore = 2;
         }
-
+        /// <summary>
+        /// Dispplays skins grid based on clicked button
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
         private void ChangeSkin(object sender, RoutedEventArgs e)
         {
-            wasPlaying = isPlaying;
+            //Acknowledging player who wants to change skin based on clicked button
             if(((Button)sender).Name == btnSkinPlayerA.Name)
             {
                 isSkinForPlayer1 = true;
@@ -386,18 +454,39 @@ namespace Othello
             {
                 isSkinForPlayer1 = false;
             }
+            //Stopping game
+            wasPlaying = isPlaying;
             isPlaying = false;
+            //Displaying skins grid
             grdSkinSelector.Visibility = Visibility.Visible;
         }
-
+        /// <summary>
+        /// Called when "New" button is clicked. Starts new game
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
+        private void btnNew_Click(object sender, RoutedEventArgs e)
+        {
+            StartGame();
+            isPlaying = true;
+            PrintBoard();
+        }
+        /// <summary>
+        /// Called when skin selection buttons are clicked. Changes player skin
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
         private void btnSelectSkin(object sender, RoutedEventArgs e)
         {
+            //Resuming game
             if(wasPlaying)
             {
                 isPlaying = true;
             }
             turnStartTime = DateTime.Now;
+            //Hiding skins grid
             grdSkinSelector.Visibility = Visibility.Hidden;
+            //Changing skin fot player who wanted to change
             if (isSkinForPlayer1)
             {
                 skinPlayer1 = (ImageBrush)((Button)sender).Background;
@@ -405,39 +494,64 @@ namespace Othello
             {
                 skinPlayer2 = (ImageBrush)((Button)sender).Background;
             }
+            //Player skins applied to menu buttons
             btnSkinPlayerA.Background = skinPlayer1;
             Image imagePlayer1 = new Image { Source = skinPlayer1.ImageSource };
             btnSkinPlayerA.Content = imagePlayer1;
             btnSkinPlayerB.Background = skinPlayer2;
             Image imagePlayer2 = new Image { Source = skinPlayer2.ImageSource };
             btnSkinPlayerB.Content = imagePlayer2;
-            printBoard();
+            //updating board
+            PrintBoard();
         }
-
+        /// <summary>
+        /// Called when "IA/Player" button is clicked. Enables/disables IA
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
         private void btnIA_Click(object sender, RoutedEventArgs e)
         {
             if (isIA)
             {
                 isIA = false;
+                //Updating button contents
                 lblPlayer2.Content = "Player 2";
                 btnIA.Content = "I.A";
             }
             else
             {
                 isIA = true;
+                //Updating button contents
                 lblPlayer2.Content = "I.A.";
                 btnIA.Content = "Player";
             }
         }
-
+        /// <summary>
+        /// Called when "Save" button is clicked. Writes game file
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
         private void btnSave_Click(object sender, RoutedEventArgs e)
         {
-            f.Write(this);
+            fileHandler.Write(this);
         }
-
+        /// <summary>
+        /// Called when "Open" button is clicked. Loads game file
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">routed event</param>
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
-            f.Read(this);
+            fileHandler.Read(this);
+        }
+        /// <summary>
+        /// Called when window size has changed. Not used
+        /// </summary>
+        /// <param name="sender">sender object</param>
+        /// <param name="e">size changed event</param>
+        private void Window_SizeChanged(object sender, SizeChangedEventArgs e)
+        {
+            //pass
         }
     }
 }
