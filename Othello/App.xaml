@@ -23,5 +23,83 @@
         <BitmapImage x:Key="im_rose" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_rose.png"/>
         <BitmapImage x:Key="im_strawberry" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_strawberry.png"/>
         <BitmapImage x:Key="im_vanilla" CreateOptions="IgnoreImageCache" CacheOption="OnLoad" UriSource="pack://siteoforigin:,,,/imgs/m_vanilla.png"/>
+        <!-- Thème pour les boutons -->
+        <!-- Couleurs -->
+        <Color x:Key="ControlNormalColor">#EEEEEE</Color>
+        <Color x:Key="ControlMouseOverColor">#FAFAD2</Color>
+        <Color x:Key="DisabledControlColor">#DDDDDD</Color>
+        <Color x:Key="DisabledForegroundColor">#DDDDDD</Color>
+        <Color x:Key="ControlPressedColor">#FAFAD2</Color>
+        <!-- FocusVisual -->
+        <Style x:Key="ButtonFocusVisual">
+            <Setter Property="Control.Template">
+                <Setter.Value>
+                    <ControlTemplate>
+                        <Border CornerRadius="8" BorderBrush="LightGoldenrodYellow" BorderThickness="10"></Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
+        <!-- Button -->
+        <Style TargetType="Button">
+            <Setter Property="SnapsToDevicePixels" Value="true" />
+            <Setter Property="OverridesDefaultStyle" Value="true" />
+            <Setter Property="FocusVisualStyle" Value="{StaticResource ButtonFocusVisual}" />
+            <Setter Property="MinHeight" Value="29px" />
+            <Setter Property="MinWidth"  Value="103px" />
+            <Setter Property="Foreground" Value="#FFFFFFFF" />
+            <Setter Property="Template">
+                <Setter.Value>
+                    <ControlTemplate TargetType="Button">
+                        <Border x:Name="Border" CornerRadius="8" BorderBrush="LightGoldenrodYellow" BorderThickness="10">
+                            <Border.Background>
+                                <SolidColorBrush  Color="{DynamicResource ControlNormalColor}" />
+                            </Border.Background>
+                            <VisualStateManager.VisualStateGroups>
+                                <VisualStateGroup x:Name="CommonStates">
+                                    <VisualStateGroup.Transitions>
+                                        <VisualTransition GeneratedDuration="0:0:0.5" />
+                                        <VisualTransition GeneratedDuration="0" To="Pressed" />
+                                    </VisualStateGroup.Transitions>
+                                    <VisualState x:Name="Normal" />
+                                    <VisualState x:Name="MouseOver">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Border">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource ControlMouseOverColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Pressed">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Border">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource ControlPressedColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                    <VisualState x:Name="Disabled">
+                                        <Storyboard>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(Panel.Background).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Border">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource DisabledControlColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                            <ColorAnimationUsingKeyFrames Storyboard.TargetProperty="(TextBlock.Foreground).(SolidColorBrush.Color)"
+                                                Storyboard.TargetName="Border">
+                                                <EasingColorKeyFrame KeyTime="0" Value="{StaticResource DisabledForegroundColor}" />
+                                            </ColorAnimationUsingKeyFrames>
+                                        </Storyboard>
+                                    </VisualState>
+                                </VisualStateGroup>
+                            </VisualStateManager.VisualStateGroups>
+                            <ContentPresenter
+                            HorizontalAlignment="Center"
+                            VerticalAlignment="Center"
+                            RecognizesAccessKey="True" />
+                        </Border>
+                    </ControlTemplate>
+                </Setter.Value>
+            </Setter>
+        </Style>
     </Application.Resources>
 </Application>

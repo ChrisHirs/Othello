@@ -39,8 +39,8 @@ namespace Othello
         public Board board = new Board();
         int skinIdPlayer1;
         int skinIdPlayer2;
-        Brush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
-        Brush skinPlayer1 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_banana.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        ImageBrush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        ImageBrush skinPlayer1 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_banana.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
 
         public event PropertyChangedEventHandler PropertyChanged;
 
@@ -91,7 +91,11 @@ namespace Othello
             Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
             Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
             btnSkinPlayerA.Background = skinPlayer1;
+            Image imagePlayer1 = new Image { Source = skinPlayer1.ImageSource };
+            btnSkinPlayerA.Content = imagePlayer1;
             btnSkinPlayerB.Background = skinPlayer2;
+            Image imagePlayer2 = new Image { Source = skinPlayer2.ImageSource };
+            btnSkinPlayerB.Content = imagePlayer2;
         }
 
         private void BoardHover(object sender, MouseEventArgs e)
@@ -272,7 +276,7 @@ namespace Othello
                     if(board.Ended)
                     {
                         isPlaying = false;
-                        string winner = "1";
+                        string winner = "Player 1";
                         if(board.GetBlackScore() > board.GetWhiteScore())
                         {
                             winner = lblPlayer2.Content.ToString();
@@ -328,7 +332,7 @@ namespace Othello
         private void btnMenuLeave(object sender, MouseEventArgs e)
         {
             Button btn = (Button)sender;
-            btn.Opacity = 0.7;
+            btn.Opacity = 1;
         }
 
         private void btnNew_Click(object sender, RoutedEventArgs e)
@@ -396,13 +400,17 @@ namespace Othello
             grdSkinSelector.Visibility = Visibility.Hidden;
             if (isSkinForPlayer1)
             {
-                skinPlayer1 = ((Button)sender).Background;
+                skinPlayer1 = (ImageBrush)((Button)sender).Background;
             } else
             {
-                skinPlayer2 = ((Button)sender).Background;
+                skinPlayer2 = (ImageBrush)((Button)sender).Background;
             }
             btnSkinPlayerA.Background = skinPlayer1;
+            Image imagePlayer1 = new Image { Source = skinPlayer1.ImageSource };
+            btnSkinPlayerA.Content = imagePlayer1;
             btnSkinPlayerB.Background = skinPlayer2;
+            Image imagePlayer2 = new Image { Source = skinPlayer2.ImageSource };
+            btnSkinPlayerB.Content = imagePlayer2;
             printBoard();
         }
 
@@ -412,11 +420,13 @@ namespace Othello
             {
                 isIA = false;
                 lblPlayer2.Content = "Player 2";
+                btnIA.Content = "I.A";
             }
             else
             {
                 isIA = true;
                 lblPlayer2.Content = "I.A.";
+                btnIA.Content = "Player";
             }
         }
 
