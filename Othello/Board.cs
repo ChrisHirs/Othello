@@ -1,10 +1,31 @@
-﻿using System;
+﻿/* Board logic.
+ * 
+ * Deni Gahlinger, Christophe Hirschi
+ * 
+ * January 2018
+ */
+
+using System;
 using System.Diagnostics;
 
 namespace Othello
 {
+    /// <summary>
+    /// Board logic
+    /// </summary>
     public class Board : IPlayable.IPlayable
     {
+        //Ponderation matrix
+        int[,] evalTabBegGame = {
+                { 13, -3, -2, -2, -2, -2, -3, 13 },
+                { -3, -3, -1, -1, -1, -1, -3, -3 },
+                { -2, -1, 1, 1, 1, 1, -1, -2 },
+                { -2, -1, 1, 5, 5, 1, -1, -2 },
+                { -2, -1, 1, 5, 5, 1, -1, -2 },
+                { -2, -1, 1, 1, 1, 1, -1, -2 },
+                { -3, -3, -1, -1, -1, -1, -3, -3 },
+                { 13, -3, -2, -2, -2, -2, -3, 13 },
+            };
         int[,] evalTabEndGame = {
                 { 9, 0, 3, 3, 3, 3, 0, 9 },
                 { 0, 0, 1, 1, 1, 1, 0, 0 },
@@ -15,43 +36,31 @@ namespace Othello
                 { 0, 0, 1, 1, 1, 1, 0, 0 },
                 { 9, 0, 3, 3, 3, 3, 0, 9 },
             };
-        public int[,] EvalTabEndGame
-        {
-            get; set;
-        }
-        int[,] evalTabBegGame = {
-                { 16, 0, 1, 1, 1, 1, 0, 16 },
-                { 0, 0, 2, 2, 2, 2, 0, 0 },
-                { 1, 2, 4, 4, 4, 4, 2, 1 },
-                { 1, 2, 4, 8, 8, 4, 2, 1 },
-                { 1, 2, 4, 8, 8, 4, 2, 1 },
-                { 1, 2, 4, 4, 4, 4, 2, 1 },
-                { 0, 0, 2, 2, 2, 2, 0, 0 },
-                { 16, 0, 1, 1, 1, 1, 0, 16 },
-            };
-        public int[,] EvalTabBegGame
-        {
-            get; set;
-        }
+        //End of the game
         bool ended = false;
+        //State of the board
+        int[,] boardState;
+        //Accessors
         public bool Ended
         {
             get; set;
         }
-        int[,] boardState;
         public int[,] BoardState
         {
             get; set;
         }
+        /// <summary>
+        /// Constructor
+        /// </summary>
         public Board()
         {
+            //Initializing board
             boardState = new int[8,8];
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     boardState[i, j] = -1;
-                    evalTabBegGame[i, j] = evalTabBegGame[i, j] - 3;
                 }
             }
             boardState[3, 3] = 0;
@@ -59,7 +68,10 @@ namespace Othello
             boardState[3, 4] = 1;
             boardState[4, 4] = 0;
         }
-
+        /// <summary>
+        /// Returns the number of black tiles
+        /// </summary>
+        /// <returns></returns>
         public int GetBlackScore()
         {
             int blackScore = 0;
@@ -75,20 +87,50 @@ namespace Othello
             }
             return blackScore;
         }
-
+        /// <summary>
+        /// Returns the number of white tiles on the board
+        /// </summary>
+        /// <returns></returns>
+        public int GetWhiteScore()
+        {
+            int whiteScore = 0;
+            for (int i = 0; i < 8; i++)
+            {
+                for (int j = 0; j < 8; j++)
+                {
+                    if (boardState[i, j] == 0)
+                    {
+                        whiteScore++;
+                    }
+                }
+            }
+            return whiteScore;
+        }
+        /// <summary>
+        /// Returns a reference to a 2D array with the board status
+        /// </summary>
+        /// <returns>The 8x8 tiles status</returns>
         public int[,] GetBoard()
         {
             return boardState;
         }
-
+        /// <summary>
+        /// Returns the IA's name
+        /// </summary>
+        /// <returns></returns>
         public string GetName()
         {
             return "G7: Deni Gahlinger, Christophe Hischi";
         }
-
+        /// <summary>
+        /// Asks the game engine next (valid) move given a game position
+        /// </summary>
+        /// <param name="game">a 2D board with integer values: 0 for white 1 for black and -1 for empty tiles. First index for the column, second index for the line</param>
+        /// <param name="level">an integer value to set the level of the IA, 5 normally</param>
+        /// <param name="whiteTurn">true if white players turn, false otherwise</param>
+        /// <returns>The column and line indices. Will return {-1,-1} as PASS if no possible move </returns>
         public Tuple<int, int> GetNextMove(int[,] game, int level, bool whiteTurn)
         {
-            //Debug.WriteLine("GET NEXT MOVE");
             int opponentMark = 0;
             int playerMark = 1;
             int minOrMax = 1;
@@ -98,25 +140,37 @@ namespace Othello
                 playerMark = 0;
                 minOrMax = -1;
             }
-
+            //First evaluation
             int val = EvalBoard(boardState, whiteTurn, whiteTurn);
-            int res;
-            Tuple<int, int> op;
-            alphabeta(boardState, level, minOrMax, val, playerMark, opponentMark, whiteTurn, out res, out op);
-            //Debug.WriteLine("OP : <" + op.Item1 + ", " + op.Item2 + ">");
-            Debug.WriteLine("Best Eval: " + res);
+            //Alphabeta
+            Alphabeta(boardState, level, minOrMax, val, playerMark, opponentMark, whiteTurn, out int res, out Tuple<int, int> op);
             return op;
         }
-        public void alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int localplayerMark, int localopponentMark, bool globalIsWhite, out int val, out Tuple<int, int> op)
+        /// <summary>
+        /// Alphabeta algorithm 
+        /// </summary>
+        /// <param name="board">board game</param>
+        /// <param name="depth">algorithm depth</param>
+        /// <param name="minOrMax">-1 or 1</param>
+        /// <param name="parentValue">value of the last result</param>
+        /// <param name="localplayerMark">local player</param>
+        /// <param name="localopponentMark">loacl opponent</param>
+        /// <param name="globalIsWhite">global white turn</param>
+        /// <param name="val">value returned</param>
+        /// <param name="op">operation returned as tuple</param>
+        public void Alphabeta(int[,] board, int depth, int minOrMax, int parentValue, int localplayerMark, int localopponentMark, bool globalIsWhite, out int val, out Tuple<int, int> op)
         {
+            //Setting local white turn
             bool localwhiteTurn = true;
             if (localplayerMark == 1)
             {
                 localwhiteTurn = false;
             }
-            if (depth > 0 && !isFinal(board, localwhiteTurn))
+            //Executing algorithm while depth positive and board not full
+            if (depth > 0 && !IsFinal(board, localwhiteTurn))
             {
-                op = Tuple.Create(-1, -1); ;
+                op = Tuple.Create(-1, -1);
+                //Getting first value based on turn
                 if (!globalIsWhite)
                 {
                     val = minOrMax * -Int32.MaxValue - 1;
@@ -125,25 +179,23 @@ namespace Othello
                 {
                     val = minOrMax * (Int32.MinValue + 1);
                 }
-                //Debug.WriteLine("minOrMax: " + minOrMax + ", val: " + val);
+                //For each possible move
                 for (int i = 0; i < 8; i++)
                 {
                     for (int j = 0; j < 8; j++)
                     {
-                        //Debug.WriteLine("i: " + i + ", j: " + j + ", localWhiteTurn: " + localwhiteTurn + ", isPlayable: " + IsPlayableGeneric(board, i, j, localwhiteTurn));
+                        //If this move is playable
                         if (IsPlayableGeneric(board, i, j, localwhiteTurn))
                         {
                             int[,] newboard = (int[,])board.Clone();
                             newboard[i, j] = localplayerMark ;
-                            changeSquaresAfterPlay(ref newboard, i, j, localwhiteTurn);
-                            int newVal;
-                            Tuple<int, int> dummy;
-                            Debug.Write("i = " + i + ", j = " + j + "\n");
-                            alphabeta(newboard, depth - 1, minOrMax * -1, val, localplayerMark, localopponentMark, globalIsWhite, out newVal, out dummy);
-                            //Debug.WriteLine("newVal: " + newVal + ", minMax: " + minOrMax + ", val: " + val);
+                            ChangeSquaresAfterPlay(ref newboard, i, j, localwhiteTurn);
+                            //Recursive search
+                            Alphabeta(newboard, depth - 1, minOrMax * -1, val, localplayerMark, localopponentMark, globalIsWhite, out int newVal, out Tuple<int, int> dummy);
+                            //Looking for the best move based on best value
                             if (newVal * minOrMax > val * minOrMax)
                             {
-                                //Debug.WriteLine("Tuple different de -1, -1");
+                                //Tuple of best move is created and returned
                                 val = newVal;
                                 op = Tuple.Create(i,j);
                                 if(val * minOrMax > parentValue * minOrMax)
@@ -158,107 +210,92 @@ namespace Othello
             }
             else
             {
+                //Otherwise it passes
                 val = EvalBoard(board, globalIsWhite, localwhiteTurn);
                 op = Tuple.Create(-1,-1);
             }
         }
-        public bool isFinal(int[,] board, bool isWhite)
+        /// <summary>
+        /// Counts playable moves for given player
+        /// </summary>
+        /// <param name="board">board game</param>
+        /// <param name="isWhite">player turn</param>
+        /// <returns></returns>
+        public bool IsFinal(int[,] board, bool isWhite)
         {
-            if (countPlayableSquares(board, isWhite) == 0)
+            if (CountPlayableSquares(board, isWhite) == 0)
             {
                 return true;
             }
             return false;
         }
+        /// <summary>
+        /// Evaluation function of best move
+        /// </summary>
+        /// <param name="board">board game</param>
+        /// <param name="globalIsWhite">global white turn</param>
+        /// <param name="localIsWhite">local white turn</param>
+        /// <returns></returns>
         public int EvalBoard(int[,] board, bool globalIsWhite, bool localIsWhite)
         {
-            int emptySquares = countEmptySquares();
+            //Counting remaining empty squares on board
+            int emptySquares = CountEmptySquares();
+            //Stating near end of game
             bool endOfGame = false;
             if (emptySquares < 25)
             {
                 endOfGame = true;
             }
-
-            int opponentMark = 0;
+            //Setting player mark
             int playerMark = 1;
             if (globalIsWhite)
             {
-                opponentMark = 1;
                 playerMark = 0;
             }
             int result = 0;
+            //Ponderation matrix : each square has a ponderation number
             for (int i = 0; i < 8; i++)
             {
                 for (int j = 0; j < 8; j++)
                 {
                     if (board[i, j] != -1)
                     {
+                        //Setting actual square based on existing counters. We actually check opponents counters as well
                         int squareMark;
                         if (board[i,j] == playerMark)
                         {
-                            squareMark = 1;
-                            /*if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
-                            {
-                                result += 20;
-                            }
-                            else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5)))
-                            {
-                                if (board[(i/4)*7,(j/4)*7] == -1)
-                                {
-                                    //Debug.WriteLine("i/7 : " + (i / 4) * 7 + "j/7 : " + (j / 4) * 7);
-                                    result -= 12;
-                                }
-                                else if(board[i / 7, j / 7] == playerMark)
-                                {
-                                    result += 12;
-                                } else
-                                {
-                                    result += 3;
-                                }
-
-                            } else
-                            {
-                                result += evalTab[i, j] * notEndOfGame;
-                            }*/
-                            
+                            squareMark = 1;    
                         }
                         else
                         {
                             squareMark = -1;
-                            /*if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
-                            {
-                                result -= 8;
-                            }
-                            else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5)))
-                            {
-                                result += 0;
-                            }
-                            else
-                            {
-                                result -= evalTab[i, j] * notEndOfGame;
-                            }*/
                         }
+                        //Specific logic for corners
                         if ((i == 0 && (j == 0 || j == 7)) || (i == 7 && (j == 0 || j == 7)))
                         {
-                            result += 80;
+                            //Prioritizing corners
+                            result += 50;
                         }
+                        //Specific logic for adjacent squares
                         else if ((i < 2 && (j < 2 || j > 5)) || (i > 5 && (j < 2 || j > 5)))
                         {
+                            //If empty, avoiding move 
                             if (board[(i / 4) * 7, (j / 4) * 7] == -1)
                             {
-                                //Debug.WriteLine("i/7 : " + (i / 4) * 7 + "j/7 : " + (j / 4) * 7);
-                                result -= 100 * squareMark;
+                                result -= 50 * squareMark;
                             }
+                            //If already player owned
                             else if (board[i / 7, j / 7] == playerMark)
                             {
                                 result += 5 * squareMark;
                             }
+                            //If opponenet owned
                             else
                             {
                                 result += 3 * squareMark;
                             }
-
                         }
+                        //Otherwise refering to ponderation matrix
                         else
                         {
                             if (!endOfGame)
@@ -273,36 +310,18 @@ namespace Othello
                     }
                 }
             }
-            //Debug.WriteLine("and result is : " + result);
-            /*int fact = 10;
-            if (!localIsWhite)
+            //Parity : prioritize moves where the opponent can not play to change parity
+            if ((localIsWhite && CountEmptySquares() % 2 == 0) || (!localIsWhite && CountEmptySquares() % 2 == 1))
             {
-                result -= GetWhiteScore() * fact * notEndOfGame;
-            } else
-            {
-                result -= GetBlackScore() * fact * notEndOfGame;
-            }
-            //Debug.WriteLine("and result - score is : " + result);*/
-            //Parity
-            if ((localIsWhite && countEmptySquares() % 2 == 0) || (!localIsWhite && countEmptySquares() % 2 == 1))
-            {
-                if (countPlayableSquares(board, !localIsWhite) == 0)
+                if (CountPlayableSquares(board, !localIsWhite) == 0)
                 {
-                    result += 200;
+                    result += 100;
                 }
             }
-            /*if (localIsWhite == globalIsWhite)
-            {
-                result -= countPlayableSquares(board, localIsWhite);
-            }
-            else
-            {
-                result += countPlayableSquares(board, localIsWhite);
-            }*/
-            //Mobility
+            //Mobility : prioritize moves where the opponent can play the least
             int factor = 8;
-            result += (countPlayableSquares(board, globalIsWhite) - countPlayableSquares(board, !globalIsWhite)) * factor;
-            Debug.WriteLine("Eval: " + result);
+            result += (CountPlayableSquares(board, globalIsWhite) - CountPlayableSquares(board, !globalIsWhite)) * factor;
+            //Returns result based on global white turn
             if (globalIsWhite)
             {
                 return -result;
@@ -312,8 +331,11 @@ namespace Othello
                 return result;
             }
         }
-
-        private int countEmptySquares()
+        /// <summary>
+        /// Counts remaining empty squares 
+        /// </summary>
+        /// <returns>empty squares</returns>
+        private int CountEmptySquares()
         {
             int nbempty = 0;
             for (int i = 0; i < 8; i++)
@@ -328,32 +350,31 @@ namespace Othello
             }
             return nbempty;
         }
-
-        public int GetWhiteScore()
-        {
-            int whiteScore = 0;
-            for (int i = 0; i < 8; i++)
-            {
-                for (int j = 0; j < 8; j++)
-                {
-                    if(boardState[i, j] == 0)
-                    {
-                        whiteScore++;
-                    }
-                }
-            }
-            return whiteScore;
-        }
-
+        /// <summary>
+        /// Returns true if the move is valid for specified color
+        /// </summary>
+        /// <param name="column">value between 0 and 7</param>
+        /// <param name="line">value between 0 and 7</param>
+        /// <param name="isWhite">define turn</param>
+        /// <returns></returns>
         public bool IsPlayable(int column, int line, bool isWhite)
         {
             return IsPlayableGeneric(boardState, column, line, isWhite);
         }
+        /// <summary>
+        /// Returns true if the move is valid for specified color from board
+        /// </summary>
+        /// <param name="board">board game</param>
+        /// <param name="column">value between 0 and 7</param>
+        /// <param name="line">value between 0 and 7</param>
+        /// <param name="isWhite">define turn</param>
+        /// <returns></returns>
         public bool IsPlayableGeneric(int[,] board, int column, int line, bool isWhite)
         {
             column = column % 8;
             line = line % 8;
             bool result = false;
+            //For a given coulmn and line
             if (board[column, line] == -1)
             {
                 int opponentMark = 0;
@@ -363,17 +384,23 @@ namespace Othello
                     opponentMark = 1;
                     playerMark = 0;
                 }
+                //Setting directions
                 int[,] directions = new int[8, 2] { { -1, -1 }, { 0, -1 }, { 1, -1 }, { -1, 0 }, { 1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 } };
+                //For each direction
                 for (int i = 0; i < 8; i++)
                 {
+                    //For a given direction
                     if (column + directions[i, 0] < 8 && column + directions[i, 0] >= 0 && line + directions[i, 1] < 8 && line + directions[i, 1] >= 0)
                     {
+                        //if in this direction there is an opponent counter
                         if (board[column + directions[i, 0], line + directions[i, 1]] == opponentMark)
                         {
                             int iIterator = column + directions[i, 0];
                             int jIterator = line + directions[i, 1];
+                            //While there is a counter
                             while (iIterator >= 0 && jIterator >= 0 && iIterator < 8 && jIterator < 8 && board[iIterator, jIterator] != -1)
                             {
+                                //If there is a player counter at the end then it is a valid turn
                                 if (board[iIterator, jIterator] == playerMark)
                                 {
                                     result = true;
@@ -387,10 +414,20 @@ namespace Othello
             }
             return result;
         }
+        /// <summary>
+        /// Will update the board status if the move is valid and return true
+        /// Will return false otherwise (board is unchanged)
+        /// </summary>
+        /// <param name="column">value between 0 and 7</param>
+        /// <param name="line">value between 0 and 7</param>
+        /// <param name="isWhite">true for white move, false for black move</param>
+        /// <returns></returns>
         public bool PlayMove(int column, int line, bool isWhite)
         {
+            //If the move is playable
             if (IsPlayable(column, line, isWhite))
             {
+                //Giving appropriate color to board
                 if (isWhite)
                 {
                     boardState[column, line] = 0;
@@ -398,16 +435,17 @@ namespace Othello
                 {
                     boardState[column, line] = 1;
                 }
-                changeSquaresAfterPlay(ref boardState, column, line, isWhite);
-                Debug.WriteLine("nb playable for " + !isWhite + " : " + countPlayableSquares(boardState, !isWhite));
-                Debug.WriteLine("nb playable for " + isWhite + " : " + countPlayableSquares(boardState, isWhite));
-                if (countPlayableSquares(boardState, !isWhite) > 0)
+                //Flipping counters after the play 
+                ChangeSquaresAfterPlay(ref boardState, column, line, isWhite);
+                //Checking if not end of game
+                if (CountPlayableSquares(boardState, !isWhite) > 0)
                 {
                     return true;
                 }
                 else
                 {
-                    if(!(countPlayableSquares(boardState, isWhite) > 0))
+                    //If end of game
+                    if(!(CountPlayableSquares(boardState, isWhite) > 0))
                     {
                         this.Ended = true;
                     }
@@ -420,7 +458,13 @@ namespace Othello
             }
             
         }
-        public int countPlayableSquares(int[,] board, bool isWhite)
+        /// <summary>
+        /// Counts playable counters on board
+        /// </summary>
+        /// <param name="board">board game</param>
+        /// <param name="isWhite">define turn</param>
+        /// <returns></returns>
+        public int CountPlayableSquares(int[,] board, bool isWhite)
         {
             int playableSquares = 0;
             for (int i = 0; i < 8; i++)
@@ -435,7 +479,14 @@ namespace Othello
             }
             return playableSquares;
         }
-        private void changeSquaresAfterPlay(ref int[,] b, int column, int line, bool isWhite)
+        /// <summary>
+        /// Flips counters after a play to given player
+        /// </summary>
+        /// <param name="board">board game</param>
+        /// <param name="column">value between 0 and 7</param>
+        /// <param name="line">value between 0 and 7</param>
+        /// <param name="isWhite">true for white move, false for black move</param>
+        private void ChangeSquaresAfterPlay(ref int[,] board, int column, int line, bool isWhite)
         {
             int opponentMark = 0;
             int playerMark = 1;
@@ -444,28 +495,33 @@ namespace Othello
                 opponentMark = 1;
                 playerMark = 0;
             }
+            //Setting directions
             int[,] directions = new int[8, 2] { { -1, -1 }, { 0, -1 }, { 1, -1 }, { -1, 0 }, { 1, 0 }, { -1, 1 }, { 0, 1 }, { 1, 1 } };
+            //for each direction
             for (int i = 0; i < 8; i++)
             {
                 int iIterator = column + directions[i, 0];
                 int jIterator = line + directions[i, 1];
                 bool isDirectionValid = false;
-                while (iIterator >= 0 && jIterator >= 0 && iIterator < 8 && jIterator < 8 && b[iIterator, jIterator] != -1)
+                //Defining if it is a valid direction or not
+                while (iIterator >= 0 && jIterator >= 0 && iIterator < 8 && jIterator < 8 && board[iIterator, jIterator] != -1)
                 {
-                    if (b[iIterator, jIterator] == playerMark)
+                    if (board[iIterator, jIterator] == playerMark)
                     {
                         isDirectionValid = true;
                     }
                     iIterator += directions[i, 0];
                     jIterator += directions[i, 1];
                 }
+                //If valid direction
                 if (isDirectionValid)
                 {
                     iIterator = column + directions[i, 0];
                     jIterator = line + directions[i, 1];
-                    while (b[iIterator, jIterator] == opponentMark)
+                    //Flipping opponent counters in that direction
+                    while (board[iIterator, jIterator] == opponentMark)
                     {
-                        b[iIterator, jIterator] = playerMark;
+                        board[iIterator, jIterator] = playerMark;
                         iIterator += directions[i, 0];
                         jIterator += directions[i, 1];
                     }
