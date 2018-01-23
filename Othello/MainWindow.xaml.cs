@@ -50,6 +50,10 @@ namespace Othello
         //Databinding
         public event PropertyChangedEventHandler PropertyChanged;
         //Accessors
+        public bool IsIA
+        {
+            get; set;
+        }
         public int WhiteScore
         {
             get { return whiteScore; }
@@ -542,7 +546,7 @@ namespace Othello
         /// <param name="e">routed event</param>
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
-            fileHandler.Read(this);
+            fileHandler.Read();
         }
         /// <summary>
         /// Called when window size has changed. Not used
