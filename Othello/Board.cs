@@ -45,10 +45,6 @@ namespace Othello
         {
             get; set;
         }
-        public int[,] BoardState
-        {
-            get; set;
-        }
         /// <summary>
         /// Constructor
         /// </summary>
@@ -113,6 +109,14 @@ namespace Othello
         public int[,] GetBoard()
         {
             return boardState;
+        }
+        /// <summary>
+        /// Sets boardstate from given board
+        /// </summary>
+        /// <param name="board">The 8x8 tiles status</param>
+        public void SetBoard(int[,] board)
+        {
+            boardState = board;
         }
         /// <summary>
         /// Returns the IA's name

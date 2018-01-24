@@ -45,6 +45,8 @@ namespace Othello
         //Base skins (Banana for player 1 and Blueberry for IA/player 2)
         ImageBrush skinPlayer1 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_banana.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
         ImageBrush skinPlayer2 = new ImageBrush(Imaging.CreateBitmapSourceFromHBitmap(Properties.Resources.m_blueberry.GetHbitmap(), IntPtr.Zero, Int32Rect.Empty, BitmapSizeOptions.FromEmptyOptions()));
+        public Image imagePlayer1 = new Image();
+        public Image imagePlayer2 = new Image();
         //Board
         public Board board = new Board();
         //Databinding
@@ -52,7 +54,16 @@ namespace Othello
         //Accessors
         public bool IsIA
         {
-            get; set;
+            get { return isIA; }
+            set { isIA = value; }
+        }
+        public TimeSpan Player1TimeS
+        {
+            get { return player1TimeS; }
+        }
+        public TimeSpan Player2TimeS
+        {
+            get { return player2TimeS; }
         }
         public int WhiteScore
         {
@@ -98,11 +109,12 @@ namespace Othello
             Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
             //Player skins applied to menu buttons
             btnSkinPlayerA.Background = skinPlayer1;
-            Image imagePlayer1 = new Image { Source = skinPlayer1.ImageSource };
+            imagePlayer1.Source = new BitmapImage(new Uri("pack://siteoforigin:,,,/imgs/m_banana.png"));
             btnSkinPlayerA.Content = imagePlayer1;
             btnSkinPlayerB.Background = skinPlayer2;
-            Image imagePlayer2 = new Image { Source = skinPlayer2.ImageSource };
+            imagePlayer2.Source = new BitmapImage(new Uri("pack://siteoforigin:,,,/imgs/m_blueberry.png"));
             btnSkinPlayerB.Content = imagePlayer2;
+            
         }
         /// <summary>
         /// Shows where a player can possibly play by anchoring his counter where he can actually play
@@ -500,10 +512,10 @@ namespace Othello
             }
             //Player skins applied to menu buttons
             btnSkinPlayerA.Background = skinPlayer1;
-            Image imagePlayer1 = new Image { Source = skinPlayer1.ImageSource };
+            imagePlayer1.Source = skinPlayer1.ImageSource;
             btnSkinPlayerA.Content = imagePlayer1;
             btnSkinPlayerB.Background = skinPlayer2;
-            Image imagePlayer2 = new Image { Source = skinPlayer2.ImageSource };
+            imagePlayer2.Source = skinPlayer2.ImageSource;
             btnSkinPlayerB.Content = imagePlayer2;
             //updating board
             PrintBoard();
@@ -546,7 +558,39 @@ namespace Othello
         /// <param name="e">routed event</param>
         private void btnOpen_Click(object sender, RoutedEventArgs e)
         {
-            fileHandler.Read();
+            fileHandler.Read(out int[,] boardstate, out TimeSpan player1Time, out TimeSpan player2Time, out bool IA, out string skinSource1, out string skinSource2);
+            //StartGame
+            StartGame();
+            //Board
+            board.SetBoard(boardstate);
+            //Timers
+            player1TimeS = player1Time;
+            player2TimeS = player2Time;
+            //IA
+            isIA = IA;
+            //Skins
+            skinPlayer1.ImageSource = new BitmapImage(new Uri(skinSource1));
+            btnSkinPlayerA.Background = skinPlayer1;
+            imagePlayer1.Source = skinPlayer1.ImageSource;
+            skinPlayer2.ImageSource = new BitmapImage(new Uri(skinSource2));
+            btnSkinPlayerA.Content = imagePlayer1;
+            btnSkinPlayerB.Background = skinPlayer2;
+            imagePlayer2.Source = skinPlayer2.ImageSource;
+            btnSkinPlayerB.Content = imagePlayer2;
+            //Counting counters to know color turn
+            blackScore = board.GetBlackScore();
+            whiteScore = board.GetWhiteScore();
+            if ((blackScore + whiteScore) % 2 == 0)
+            {
+                turnToWhite = true;
+            }
+            else
+            {
+                turnToWhite = false;
+            }
+            //MàJ
+            isPlaying = true;
+            PrintBoard();
         }
         /// <summary>
         /// Called when window size has changed. Not used
