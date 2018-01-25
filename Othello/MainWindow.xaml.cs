@@ -566,6 +566,8 @@ namespace Othello
                 //Timers
                 player1TimeS = player1Time;
                 player2TimeS = player2Time;
+                Player2Time = player2TimeS.ToString("mm\\:ss\\:ff");
+                Player1Time = player1TimeS.ToString("mm\\:ss\\:ff");
                 //IA
                 isIA = IA;
                 //Skins
@@ -578,8 +580,8 @@ namespace Othello
                 imagePlayer2.Source = skinPlayer2.ImageSource;
                 btnSkinPlayerB.Content = imagePlayer2;
                 //Counting counters to know color turn
-                blackScore = board.GetBlackScore();
-                whiteScore = board.GetWhiteScore();
+                BlackScore = board.GetBlackScore();
+                WhiteScore = board.GetWhiteScore();
                 if ((blackScore + whiteScore) % 2 == 0)
                 {
                     turnToWhite = true;
