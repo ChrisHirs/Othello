@@ -67,34 +67,46 @@ namespace Othello
         {
             OpenFileDialog openFileDialog = new OpenFileDialog { Title = "Open a game File", Filter = "Macarothello game file|*.moth" };
             openFileDialog.ShowDialog();
-            //Reading in file... 
-            using (StreamReader streamReader = new StreamReader(openFileDialog.FileName, true))
+            if (openFileDialog.FileName != "")
             {
-                //Game board
-                string boardString = streamReader.ReadLine();
-                int[] boardTab = boardString.Split(',').Select(int.Parse).ToArray();
-                int[,] boardTmp = new int[8, 8];
-                int r = 0;
-                int c = 0;
-                for (int i= 0; i < 64; i++)
+                //Reading in file... 
+                using (StreamReader streamReader = new StreamReader(openFileDialog.FileName, true))
                 {
-                    boardTmp[r, c] = boardTab[i];
-                    c++;
-                    if (c == 8)
+                    //Game board
+                    string boardString = streamReader.ReadLine();
+                    int[] boardTab = boardString.Split(',').Select(int.Parse).ToArray();
+                    int[,] boardTmp = new int[8, 8];
+                    int r = 0;
+                    int c = 0;
+                    for (int i = 0; i < 64; i++)
                     {
-                        r++;
-                        c = 0;
+                        boardTmp[r, c] = boardTab[i];
+                        c++;
+                        if (c == 8)
+                        {
+                            r++;
+                            c = 0;
+                        }
                     }
+                    board = boardTmp;
+                    //Timers
+                    player1Time = TimeSpan.Parse(streamReader.ReadLine());
+                    player2Time = TimeSpan.Parse(streamReader.ReadLine());
+                    //IA
+                    isIA = bool.Parse(streamReader.ReadLine());
+                    //Skins
+                    skinSource1 = streamReader.ReadLine();
+                    skinSource2 = streamReader.ReadLine();
                 }
-                board = boardTmp;
-                //Timers
-                player1Time = TimeSpan.Parse(streamReader.ReadLine());
-                player2Time = TimeSpan.Parse(streamReader.ReadLine());
-                //IA
-                isIA = bool.Parse(streamReader.ReadLine());
-                //Skins
-                skinSource1 = streamReader.ReadLine();
-                skinSource2 = streamReader.ReadLine();
+            }
+            else
+            {
+                board = null;
+                player1Time = new TimeSpan();
+                player2Time = new TimeSpan();
+                isIA = false;
+                skinSource1 = "";
+                skinSource2 = "";
             }
         }
     }
