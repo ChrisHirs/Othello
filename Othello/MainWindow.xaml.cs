@@ -42,6 +42,7 @@ namespace Othello
         Rectangle rectHover = new Rectangle();
         FileHandler fileHandler = new FileHandler();
         //Base skins (Banana for player 1 and Blueberry for IA/player 2)
+        //from https://image.shutterstock.com/z/stock-vector-colorful-macaroons-flavors-vector-207158932.jpg
         ImageBrush skinPlayer1 = new ImageBrush(new BitmapImage(new Uri("pack://siteoforigin:,,,/imgs/m_banana.png")));
         ImageBrush skinPlayer2 = new ImageBrush(new BitmapImage(new Uri("pack://siteoforigin:,,,/imgs/m_blueberry.png")));
         public Image imagePlayer1 = new Image();
@@ -99,7 +100,7 @@ namespace Othello
             isIA = true;
             isSkinForPlayer1 = true;
             isPlaying = false;
-            //Background
+            //Background from https://www.slicy-products.com/wp-content/uploads/fancy_products_uploads/2017/04/23/img3583.JPG
             this.Background = new ImageBrush(new BitmapImage(new Uri("pack://siteoforigin:,,,/imgs/BackgroundOthello.jpg")));
             //Player times
             player1TimeS = new TimeSpan();
